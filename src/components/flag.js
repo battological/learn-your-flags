@@ -1,23 +1,32 @@
 import React from 'react';
 import _ from 'lodash';
 
+function getOrdinal (n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
 
 export default class Quizzer extends React.Component {
   state = {
     correct: false,
+    giveup: false,
     attempts: 0,
     index: 0,
     wrong: ''
   };
+
   stack = _.shuffle(this.props.flags);
+
   reduce = input => {
-    let output = input;
-    output = output.toLowerCase();
-    output = output.replace(/the|and|of|'/ig, '');
-    output = output.replace(/\s\s+/ig, ' ');
-    output = output.trim();
+    const output = input
+      .toLowerCase()
+      .replace(/\bthe\b|\band\b|\bof\b|'/ig, '')
+      .replace(/\s\s+/ig, ' ')
+      .trim();
     return output;
   };
+
   validate = (input, compare) => {
     const flag = compare;
     flag.accepts = flag.accepts || [];
@@ -26,24 +35,36 @@ export default class Quizzer extends React.Component {
     const accepts = flag.accepts.map(accept => this.reduce(accept));
     return (guess === answer || accepts.includes(guess));
   };
+
   guess = (e) => {
     e.preventDefault();
     const input = this.refs.guess.value;
+    if (input === '') return;
     if (this.validate(input, this.stack[this.state.index])) {
       this.setState({ correct: true });
     } else {
+      this.refs.guess.value = '';
       this.setState({
         wrong: input,
         attempts: this.state.attempts + 1
       });
     }
   };
-  skip = () => {
+
+  skip = e => {
+    e.preventDefault();
     this.next();
   };
+
+  giveup = e => {
+    e.preventDefault();
+    this.setState({ giveup: true });
+  };
+
   next = () => {
     this.setState({
       correct: false,
+      giveup: false,
       attempts: 0,
       index: this.state.index + 1,
       wrong: ''
@@ -52,37 +73,50 @@ export default class Quizzer extends React.Component {
       this.refs.guess.focus();
     });
   };
+
   controls = () => {
     if (this.state.correct) {
       return (
         <div>
           <p>
-            Nice! You got {this.stack[this.state.index].name}!
+            Nice! You got {this.stack[this.state.index].name} on your {getOrdinal(this.state.attempts + 1)} try!
           </p>
           <button onClick={this.next} className="btn btn-success" autoFocus>Next</button>
         </div>
       );
     } else {
-      return (
-        <div>
-          {this.state.wrong && `Nope, not ${this.state.wrong}.`}
-          <form className="form-inline" onSubmit={this.guess}>
-            <div className="form-group">
-              <label htmlFor="guess">Country</label>
+      if (this.state.giveup) {
+        return (
+          <div>
+            <p>
+              It was {this.stack[this.state.index].name}.
+            </p>
+            <button onClick={this.next} className="btn btn-default" autoFocus>Next</button>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            {this.state.wrong && `Nope, not ${this.state.wrong}.`}
+            <form className="form-inline" onSubmit={this.guess}>
+              <label htmlFor="guess">This country is:</label><br />
               <input type="text" className="form-control" id="guess" ref="guess" />
-            </div>
-            <input type="submit" className="btn btn-primary" value="Guess" />
-            <button onClick={this.skip} className="btn btn-danger">Skip</button>
-            <span>{this.state.attempts}</span>
-          </form>
-        </div>
-      );
+              <p>
+                <input type="submit" className="btn btn-primary" value="Guess" />
+                <button onClick={this.skip} className="btn btn-danger">Skip</button>
+                <button onClick={this.giveup} className="btn btn-default">Give up</button>
+              </p>
+            </form>
+          </div>
+        );
+      }
     }
   };
+
   render () {
     return (
       <section id="quizzer">
-        <img src={this.stack[this.state.index].url} alt="flag" width="1024px" />
+        <img src={this.stack[this.state.index].url} alt="flag" height="600px" />
         {this.controls()}
       </section>
     );
