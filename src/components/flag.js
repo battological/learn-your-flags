@@ -12,6 +12,7 @@ export default class Quizzer extends React.Component {
     correct: false,
     giveup: false,
     attempts: 0,
+    wrongGuesses: [],
     index: 0,
     wrong: ''
   };
@@ -46,6 +47,7 @@ export default class Quizzer extends React.Component {
       this.refs.guess.value = '';
       this.setState({
         wrong: input,
+	wrongGuesses: this.state.wrongGuesses.concat(input),
         attempts: this.state.attempts + 1
       });
     }
@@ -113,11 +115,29 @@ export default class Quizzer extends React.Component {
     }
   };
 
+  listWrongGuesses = () => {
+    return this.state.wrongGuesses.map((guess, i) => { return (
+      <li key={'wrong.'+i}>
+        {guess}
+      </li> 
+    )});
+  }
+
   render () {
     return (
       <section id="quizzer">
         <img src={this.stack[this.state.index].url} alt="flag" height="600px" />
+
         {this.controls()}
+
+	{this.state.wrongGuesses.length > 0 && 
+	  <div>
+	    <p>You have guessed:</p>
+	    <ul>
+	      {this.listWrongGuesses()}
+	    </ul>
+	  </div>
+	}
       </section>
     );
   }
