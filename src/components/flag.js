@@ -22,7 +22,7 @@ export default class Quizzer extends React.Component {
   reduce = input => {
     const output = input
       .toLowerCase()
-      .replace(/\bthe\b|\band\b|\bof\b|'/ig, '')
+      .replace(/\b(the|and|of')\b/ig, '')
       .replace(/\s\s+/ig, ' ')
       .trim();
     return output;
@@ -100,9 +100,9 @@ export default class Quizzer extends React.Component {
       } else {
         return (
           <div>
-            {this.state.wrong && `Nope, not ${this.state.wrong}.`}
             <form className="form-inline" onSubmit={this.guess}>
               <label htmlFor="guess">This country is:</label><br />
+              <p>{this.state.wrong && `Nope, not ${this.state.wrong}.`}</p>
               <input type="text" className="form-control" id="guess" ref="guess" />
               <p>
                 <input type="submit" className="btn btn-primary" value="Guess" />
@@ -139,7 +139,7 @@ export default class Quizzer extends React.Component {
     return (
       <section id="quizzer">
         <div className="well">
-          <img src={this.stack[this.state.index].url} alt="flag" height="600px" />
+          <img src={this.stack[this.state.index].url} alt="flag" height="500px" />
         </div>
         {this.controls()}
       	{this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
