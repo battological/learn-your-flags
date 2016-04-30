@@ -36,7 +36,7 @@ export default class Quizzer extends React.Component {
   validate = (input, compare) => {
     const flag = compare;
     flag.accepts = flag.accepts || [];
-    const guess = input;
+    const guess = this.reduce(input);
     const answer = this.reduce(flag.name);
     const accepts = flag.accepts.map(accept => this.reduce(accept));
     return (guess === answer || accepts.includes(guess));
