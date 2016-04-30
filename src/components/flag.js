@@ -69,7 +69,8 @@ export default class Quizzer extends React.Component {
       giveup: false,
       attempts: 0,
       index: this.state.index + 1,
-      wrong: ''
+      wrong: '',
+      wrongGuesses: []
     }, () => {
       this.refs.guess.value = '';
       this.refs.guess.focus();
@@ -116,28 +117,32 @@ export default class Quizzer extends React.Component {
   };
 
   listWrongGuesses = () => {
-    return this.state.wrongGuesses.map((guess, i) => { return (
-      <li key={'wrong.'+i}>
-        {guess}
-      </li> 
-    )});
-  }
+    return this.state.wrongGuesses.map((guess, i) => {
+      return (
+        <li key={'wrong.'+i} className="list-group-item">
+          {guess}
+        </li> 
+      )
+    });
+  };
+
+  wrongGuesses = () => (
+    <div>
+      <p>You have guessed:</p>
+      <ul className="list-group">
+        {this.listWrongGuesses()}
+      </ul>
+    </div>
+  );
 
   render () {
     return (
       <section id="quizzer">
-        <img src={this.stack[this.state.index].url} alt="flag" height="600px" />
-
+        <div className="well">
+          <img src={this.stack[this.state.index].url} alt="flag" height="600px" />
+        </div>
         {this.controls()}
-
-	{this.state.wrongGuesses.length > 0 && 
-	  <div>
-	    <p>You have guessed:</p>
-	    <ul>
-	      {this.listWrongGuesses()}
-	    </ul>
-	  </div>
-	}
+      	{this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
       </section>
     );
   }
