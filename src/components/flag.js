@@ -47,10 +47,10 @@ export default class Quizzer extends React.Component {
     const input = this.refs.guess.value;
     if (input === '') return;
     if (this.validate(input, this.stack[this.state.index])) {
-      this.setState({ 
+      this.setState({
         correct: true,
-	numCorrects: this.state.numCorrects + 1,
-	numCorrectGuesses: this.state.numCorrectGuesses.concat(this.state.wrongGuesses.length)
+        numCorrects: this.state.numCorrects + 1,
+        numCorrectGuesses: this.state.numCorrectGuesses.concat(this.state.wrongGuesses.length)
       });
     } else {
       this.refs.guess.value = '';
@@ -64,7 +64,7 @@ export default class Quizzer extends React.Component {
 
   skip = e => {
     e.preventDefault();
-    this.setState({ numSkips: this.state.numSkips + 1 })
+    this.setState({ numSkips: this.state.numSkips + 1 });
     this.next();
   };
 
@@ -148,32 +148,28 @@ export default class Quizzer extends React.Component {
     </div>
   );
 
-  finished = () => {
-    return (
-      <div>
-	<h1>Done!</h1>
-        <p>Number correct: {this.state.numCorrects}</p>
-	<p>Number of give ups: {this.state.numGiveups}</p>
-	<p>Number of skips: {this.state.numSkips}</p>
-	<p>Average guesses per correct guess: {this.average(this.state.numCorrectGuesses)}</p>
-	<p>Average guesses per give up: {this.average(this.state.numGiveupGuesses)}</p>
-      </div>
-    );
-  }
+  finished = () => (
+    <div>
+      <h1>Done!</h1>
+      <p>Number correct: {this.state.numCorrects}</p>
+      <p>Number of give ups: {this.state.numGiveups}</p>
+      <p>Number of skips: {this.state.numSkips}</p>
+      <p>Average guesses per correct guess: {this.average(this.state.numCorrectGuesses)}</p>
+      <p>Average guesses per give up: {this.average(this.state.numGiveupGuesses)}</p>
+    </div>
+  );
 
-  average = (arr) => {
-    return arr.reduce((prev, cur) => prev + cur) / arr.length;
-  }
+  average = (arr) => arr.reduce((prev, cur) => prev + cur) / arr.length;
 
   render () {
     return (
       <section id="quizzer">
         <div className="well">
-	  {this.state.index < this.stack.length && <img src={this.stack[this.state.index].url} alt="flag" height="500px" />}
-	  {this.state.index >= this.stack.length && this.finished()}
+          {this.state.index < this.stack.length && <img src={this.stack[this.state.index].url} alt="flag" height="500px" />}
+          {this.state.index >= this.stack.length && this.finished()}
         </div>
         {this.state.index < this.stack.length && this.controls()}
-      	{this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
+        {this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
       </section>
     );
   }
