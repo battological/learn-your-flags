@@ -14,7 +14,12 @@ export default class Quizzer extends React.Component {
     attempts: 0,
     wrongGuesses: [],
     index: 0,
-    wrong: ''
+    wrong: '',
+    numGiveups: 0,
+    numGiveupGuesses: [],
+    numCorrects: 0,
+    numCorrectGuesses: [],
+    numSkips: 0
   };
 
   stack = _.shuffle(this.props.flags);
@@ -22,7 +27,7 @@ export default class Quizzer extends React.Component {
   reduce = input => {
     const output = input
       .toLowerCase()
-      .replace(/\bthe\b|\band\b|\bof\b|'/ig, '')
+      .replace(/\b(the|and|of')\b/ig, '')
       .replace(/\s\s+/ig, ' ')
       .trim();
     return output;
@@ -42,7 +47,11 @@ export default class Quizzer extends React.Component {
     const input = this.refs.guess.value;
     if (input === '') return;
     if (this.validate(input, this.stack[this.state.index])) {
-      this.setState({ correct: true });
+      this.setState({ 
+        correct: true,
+	numCorrects: this.state.numCorrects + 1,
+	numCorrectGuesses: this.state.numCorrectGuesses.concat(this.state.wrongGuesses.length)
+      });
     } else {
       this.refs.guess.value = '';
       this.setState({
@@ -55,11 +64,16 @@ export default class Quizzer extends React.Component {
 
   skip = e => {
     e.preventDefault();
+    this.setState({ numSkips: this.state.numSkips + 1 })
     this.next();
   };
 
   giveup = e => {
     e.preventDefault();
+    this.setState({
+      numGiveups: this.state.numGiveups + 1,
+      numGiveupGuesses: this.state.numGiveupGuesses.concat(this.state.wrongGuesses.length)
+    });
     this.setState({ giveup: true });
   };
 
@@ -101,9 +115,9 @@ export default class Quizzer extends React.Component {
       } else {
         return (
           <div>
-            {this.state.wrong && `Nope, not ${this.state.wrong}.`}
             <form className="form-inline" onSubmit={this.guess}>
               <label htmlFor="guess">This country is:</label><br />
+              <p>{this.state.wrong && `Nope, not ${this.state.wrong}.`}</p>
               <input type="text" className="form-control" id="guess" ref="guess" />
               <p>
                 <input type="submit" className="btn btn-primary" value="Guess" />
@@ -134,14 +148,32 @@ export default class Quizzer extends React.Component {
     </div>
   );
 
+  finished = () => {
+    return (
+      <div>
+	<h1>Done!</h1>
+        <p>Number correct: {this.state.numCorrects}</p>
+	<p>Number of give ups: {this.state.numGiveups}</p>
+	<p>Number of skips: {this.state.numSkips}</p>
+	<p>Average guesses per correct guess: {this.average(this.state.numCorrectGuesses)}</p>
+	<p>Average guesses per give up: {this.average(this.state.numGiveupGuesses)}</p>
+      </div>
+    );
+  }
+
+  average = (arr) => {
+    return arr.reduce((prev, cur) => prev + cur) / arr.length;
+  }
+
   render () {
     return (
       <section id="quizzer">
         <div className="well">
-          <img src={this.stack[this.state.index].url} alt="flag" height="600px" />
+	  {this.state.index < this.stack.length && <img src={this.stack[this.state.index].url} alt="flag" height="500px" />}
+	  {this.state.index >= this.stack.length && this.finished()}
         </div>
-        {this.controls()}
-        {this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
+        {this.state.index < this.stack.length && this.controls()}
+      	{this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
       </section>
     );
   }
