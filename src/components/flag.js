@@ -47,7 +47,7 @@ export default class Quizzer extends React.Component {
       this.refs.guess.value = '';
       this.setState({
         wrong: input,
-	wrongGuesses: this.state.wrongGuesses.concat(input),
+        wrongGuesses: this.state.wrongGuesses.concat(input),
         attempts: this.state.attempts + 1
       });
     }
@@ -82,7 +82,8 @@ export default class Quizzer extends React.Component {
       return (
         <div>
           <p>
-            Nice! You got {this.stack[this.state.index].name} on your {getOrdinal(this.state.attempts + 1)} try!
+            Nice! You got {this.stack[this.state.index].name}\
+            on your {getOrdinal(this.state.attempts + 1)} try!
           </p>
           <button onClick={this.next} className="btn btn-success" autoFocus>Next</button>
         </div>
@@ -116,15 +117,13 @@ export default class Quizzer extends React.Component {
     }
   };
 
-  listWrongGuesses = () => {
-    return this.state.wrongGuesses.map((guess, i) => {
-      return (
-        <li key={'wrong.'+i} className="list-group-item">
-          {guess}
-        </li> 
-      )
-    });
-  };
+  listWrongGuesses = () => (
+    this.state.wrongGuesses.map((guess, i) => (
+      <li key={`wrong.${i}`} className="list-group-item">
+        {guess}
+      </li>
+    ))
+  );
 
   wrongGuesses = () => (
     <div>
@@ -142,7 +141,7 @@ export default class Quizzer extends React.Component {
           <img src={this.stack[this.state.index].url} alt="flag" height="600px" />
         </div>
         {this.controls()}
-      	{this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
+        {this.state.wrongGuesses.length > 0 && this.wrongGuesses()}
       </section>
     );
   }
