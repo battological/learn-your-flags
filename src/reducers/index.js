@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import flags from './flags';
+import { stack } from './flags';
 
 const rootReducer = combineReducers({
-  flags
+  stack
 });
 
-export default rootReducer;
+export default stack;
