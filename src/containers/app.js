@@ -68,10 +68,11 @@ class App extends Component {
       actions.wrongGuess(index, guess);
     }
   };
-  onNext = e => {
+  onSuccessNext = e => {
     e.preventDefault();
     const { index, actions } = this.props;
-    this.setState({ stage: App.stages.GUESSING }, () => actions.successful(index));
+    this.next(() => actions.successful(index));
+    // this.setState({ stage: App.stages.GUESSING }, () => actions.successful(index));
   }
   onSkip = e => {
     e.preventDefault();
@@ -122,7 +123,7 @@ class App extends Component {
     return (
       <div>
         <p>Well done! You got {name} right on your {ordinalAttempts} try!</p>
-        <button type="button" onClick={this.onNext} autoFocus>Next</button>
+        <button type="button" onClick={this.onSuccessNext} autoFocus>Next</button>
       </div>
     );
   };
