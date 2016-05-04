@@ -7,7 +7,7 @@ import flagLogic from './flag';
 const defaultState = {
   seed: 0,
   index: 0,
-  stack: flags.slice(0, 5).map((flag, index) => ({ ...flag, index }))
+  stack: flags.slice(0, 5)
 };
 const appLogic = (state = defaultState, action) => { // state is the full app state
   if (action.type === types.SEED) {
@@ -22,7 +22,7 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
     return {
       ...state,
       index: state.index + 1,
-      stack: state.stack.map(f => flagLogic(f, action))
+      stack: state.stack.map((f, i) => flagLogic(f, i, action))
     };
   }
   if (action.type === types.SKIP) {
@@ -39,13 +39,14 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
   if (action.type === types.GIVE_UP) {
     return {
       ...state,
-      stack: state.stack.map(f => flagLogic(f, action))
+      index: state.index + 1,
+      stack: state.stack.map((f, i) => flagLogic(f, i, action))
     };
   }
   if (action.type === types.WRONG_GUESS) {
     return {
       ...state,
-      stack: state.stack.map(f => flagLogic(f, action))
+      stack: state.stack.map((f, i) => flagLogic(f, i, action))
     };
   }
 

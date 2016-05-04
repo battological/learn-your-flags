@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from '../actions';
-//import _ from 'lodash';
+// import _ from 'lodash';
 
 import Flag from '../components/flag';
 import Controls from '../components/controls';
@@ -39,42 +39,117 @@ function average (arr) {
 class App extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
+    actions: PropTypes.object.isRequired,
     stack: PropTypes.arrayOf(PropTypes.shape({
       url: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
       accepts: React.PropTypes.arrayOf(React.PropTypes.string)
     }))
-  }
+  };
+  static stages = {
+    GUESSING: 'GUESSING',
+    SUCCESS: 'SUCCESS',
+    GIVE_UP: 'GIVE_UP'
+  };
+  state = {
+    stage: App.stages.GUESSING
+  };
   onGuess = e => {
     e.preventDefault();
     const guess = this.refs.guess.value;
+    if (guess === '') return;
+    this.refs.guess.value = '';
+
     const { stack, index, actions } = this.props;
     if (validate(guess, stack[index])) {
-      actions.successful(index);
+      this.refs.guess.value = '';
+      this.setState({ stage: App.stages.SUCCESS });
     } else {
       actions.wrongGuess(index, guess);
     }
   };
+  onNext = e => {
+    e.preventDefault();
+    const { index, actions } = this.props;
+    this.setState({ stage: App.stages.GUESSING }, () => actions.successful(index));
+  }
   onSkip = e => {
     e.preventDefault();
+    const { index, actions } = this.props;
+    actions.skip(index);
   };
   onGiveUp = e => {
     e.preventDefault();
+    this.setState({ stage: App.stages.GIVE_UP });
+  };
+  onGiveUpNext = () => {
+    const { index, actions } = this.props;
+    this.next(() => actions.giveUp(index));
   }
+  next = action => {
+    this.setState({ stage: App.stages.GUESSING }, action);
+  }
+  renderAttempts = () => {
+    const { index, stack } = this.props;
+    if (!stack[index].attempts) { return ''; }
+    return (
+      <div>
+        <p>Your guesses:</p>
+        <ul className="list-group">
+          {stack[index].attempts.map(attempt =>
+            <li className="list-group-item">{attempt}</li>
+          )}
+        </ul>
+      </div>
+    );
+  };
+  renderGuessing = () => (
+    <form id="controls" onSubmit={this.onGuess}>
+      <input type="text" ref="guess" autoFocus />
+      <div id="controlGroup">
+        <input type="submit" value="Guess" />
+        <button type="button" onClick={this.onSkip}>Skip</button>
+        <button type="button" onClick={this.onGiveUp}>Give Up</button>
+      </div>
+      {this.renderAttempts()}
+    </form>
+  );
+  renderSuccess = () => {
+    const { stack, index } = this.props;
+    const name = stack[index].name;
+    const attempts = stack[index].attempts || [];
+    const ordinalAttempts = getOrdinal(attempts.length + 1);
+    return (
+      <div>
+        <p>Well done! You got {name} right on your {ordinalAttempts} try!</p>
+        <button type="button" onClick={this.onNext} autoFocus>Next</button>
+      </div>
+    );
+  };
+  renderGiveUp = () => {
+    const { stack, index } = this.props;
+    const name = stack[index].name;
+    return (
+      <div>
+        <p>This was the flag of {name}.</p>
+        <button type="button" onClick={this.onGiveUpNext} autoFocus>Next</button>
+      </div>
+    );
+  }
+  renderComponents = () => {
+    const component = {
+      [App.stages.GUESSING]: this.renderGuessing(),
+      [App.stages.SUCCESS]: this.renderSuccess(),
+      [App.stages.GIVE_UP]: this.renderGiveUp()
+    };
+    return component[this.state.stage];
+  };
   render () {
-    console.log(this.props);
     const { index, stack } = this.props;
     return (
       <section id="quizzer">
         <Flag url={stack[index].url} />
-        <form id="controls" onSubmit={this.onGuess}>
-          <input type="text" ref="guess" autoFocus />
-          <div id="controlGroup">
-            <input type="submit" value="Guess" />
-            <button type="button" onClick={this.onSkip}>Skip</button>
-            <button type="button" onClick={this.onGiveUp}>Give Up</button>
-          </div>
-        </form>
+        {this.renderComponents()}
       </section>
     );
   }

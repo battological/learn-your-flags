@@ -1,5 +1,5 @@
 import { createStore } from 'redux';
-import rootReducer from '../reducers/flags';
+import rootReducer from '../reducers/app';
 
 export default function configureStore(initialState) {
   const store = createStore(rootReducer, initialState,
@@ -8,8 +8,8 @@ export default function configureStore(initialState) {
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
-    module.hot.accept('../reducers', () => {
-      const nextReducer = require('../reducers').default;
+    module.hot.accept('../reducers/app', () => {
+      const nextReducer = require('../reducers/app').default;
       store.replaceReducer(nextReducer);
     });
   }

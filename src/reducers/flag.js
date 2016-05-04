@@ -1,8 +1,8 @@
 import * as types from '../constants/actionTypes';
 
-const flagLogic = (flag = {}, action) => { // state refers to the individual flag
+const flagLogic = (flag = {}, index, action) => { // state refers to the individual flag
   if (action.type === types.NEXT) {
-    if (flag.index !== action.index) return flag;
+    if (index !== action.index) return flag;
 
     return {
       ...flag,
@@ -10,7 +10,7 @@ const flagLogic = (flag = {}, action) => { // state refers to the individual fla
     };
   }
   if (action.type === types.GIVE_UP) {
-    if (flag.index !== action.index) return flag;
+    if (index !== action.index) return flag;
 
     return {
       ...flag,
@@ -18,7 +18,7 @@ const flagLogic = (flag = {}, action) => { // state refers to the individual fla
     };
   }
   if (action.type === types.WRONG_GUESS) {
-    if (flag.index !== action.index) return flag;
+    if (index !== action.index) return flag;
 
     const attempts = flag.attempts || [];
     return {
