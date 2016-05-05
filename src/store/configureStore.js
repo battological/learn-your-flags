@@ -1,8 +1,9 @@
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux';
 import rootReducer from '../reducers/app';
 
 export default function configureStore(initialState) {
-  const store = createStore(rootReducer, initialState,
+  const store = createStore(combineReducers({ rootReducer, routing: routerReducer }), initialState,
       window.devToolsExtension ? window.devToolsExtension() : undefined
     );
 
