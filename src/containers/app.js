@@ -154,12 +154,24 @@ class App extends Component {
     };
     return component[this.state.stage];
   };
+  renderProgress = () => {
+    const stackSize = this.props.stack.length;
+    const progress = this.props.index / stackSize;
+    return (
+      <div className="progress">
+        <div className="progress-bar" role="progressbar" style={{ width: `${progress * 100}%` }}>
+          {this.props.index}/{stackSize}
+        </div>
+      </div>
+    );
+  };
   render () {
     const { index, stack } = this.props;
     return (
       <section id="app">
         <Header />
         <div className="container">
+          {this.renderProgress()}
           <Flag url={stack[index].url} />
           <div className="panel panel-default center-block" style={{ maxWidth: '400px' }}>
             <div className="panel-body">
