@@ -1,13 +1,15 @@
 import _ from 'lodash';
 
 import * as types from '../constants/actionTypes';
+import * as continents from '../constants/continents';
 import flags from '../constants/flags';
 import flagLogic from './flag';
 
 const defaultState = {
   seed: 0,
   index: 0,
-  stack: _.shuffle(flags).slice(0, 15)
+  continent: continents.ALL,
+  stack: _.shuffle(flags)
 };
 const appLogic = (state = defaultState, action) => { // state is the full app state
   if (action.type === types.SEED) {
@@ -47,6 +49,25 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
     return {
       ...state,
       stack: state.stack.map((f, i) => flagLogic(f, i, action))
+    };
+  }
+  if (action.type === types.CHANGE_CONTINENT) {
+    return {
+      ...state,
+      continent: action.continent,
+      stack: state.stack.filter(flag => flag.continent === action.continent)
+    };
+  }
+  if (action.type === types.LOCATION_CHANGE) {
+    if (_.has(continents, action.location)) {
+      return {
+        ...state,
+        continent: action.location,
+        stack: state.stack.filter(flag => flag.continent === action.location)
+      };
+    }
+    return {
+      ...state
     };
   }
 

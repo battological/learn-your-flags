@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 const styles = {
   header: {
@@ -12,29 +12,31 @@ const styles = {
   }
 };
 
-const Header = () => (
-  <div style={styles.header}>
-    <div className="container">
-      <div className="nav navbar-nav navbar-left">
-        <span style={styles.logo} className="navbar-brand">Vexation</span>
+const Header = () => {
+  return (
+    <div style={styles.header}>
+      <div className="container">
+        <div className="nav navbar-nav navbar-left">
+          <span style={styles.logo} className="navbar-brand">Vexation</span>
+        </div>
+        <ul className="nav navbar-nav navbar-right">
+          <li className="dropdown">
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">
+              Continent <span className="caret"></span>
+            </a>
+            <ul className="dropdown-menu">
+              <li><a href="/NORTH_AMERICA">North America</a></li>
+              <li><a href="/south_america">South America</a></li>
+              <li><a href="/EUROPE">Europe</a></li>
+              <li><a href="/AFRICA">Africa</a></li>
+              <li><a href="/ASIA">Asia</a></li>
+              <li><a href="/OCEANIA">Oceania</a></li>
+            </ul>
+          </li>
+        </ul>
       </div>
-      <ul className="nav navbar-nav navbar-right">
-        <li className="dropdown">
-          <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">
-            Continent <span className="caret"></span>
-          </a>
-          <ul className="dropdown-menu">
-            <li><a href="#">North America</a></li>
-            <li><a href="#">South America</a></li>
-            <li><a href="#">Europe</a></li>
-            <li><a href="#">Africa</a></li>
-            <li><a href="#">Asia</a></li>
-            <li><a href="#">Oceania</a></li>
-          </ul>
-        </li>
-      </ul>
     </div>
-  </div>
-);
+  );
+};
 
 export default Header;
