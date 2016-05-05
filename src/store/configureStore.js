@@ -3,7 +3,7 @@ import { routerReducer } from 'react-router-redux';
 import rootReducer from '../reducers/app';
 
 export default function configureStore(initialState) {
-  const store = createStore(combineReducers({ rootReducer, routing: routerReducer }), initialState,
+  const store = createStore(combineReducers({ app: rootReducer, routing: routerReducer }), initialState,
       window.devToolsExtension ? window.devToolsExtension() : undefined
     );
 

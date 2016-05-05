@@ -108,9 +108,9 @@ class App extends Component {
     <form id="controls" onSubmit={this.onGuess}>
       <input type="text" ref="guess" autoFocus />
       <div id="controlGroup">
-        <input type="submit" value="Guess" />
-        <button type="button" onClick={this.onSkip}>Skip</button>
-        <button type="button" onClick={this.onGiveUp}>Give Up</button>
+        <input type="submit" className="btn btn-primary" value="Guess" />
+        <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
+        <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
       </div>
       {this.renderAttempts()}
     </form>
@@ -148,7 +148,7 @@ class App extends Component {
   render () {
     const { index, stack } = this.props;
     return (
-      <section id="quizzer">
+      <section id="app">
         <Flag url={stack[index].url} />
         {this.renderComponents()}
       </section>
@@ -157,7 +157,10 @@ class App extends Component {
 }
 
 function mapStateToProps (state) {
-  return state;
+  return {
+    ...state,
+    ...state.app
+  };
 }
 
 function mapDispatchToProps (dispatch) {
