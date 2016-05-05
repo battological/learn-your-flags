@@ -5,7 +5,7 @@ import * as Actions from '../actions';
 // import _ from 'lodash';
 
 import Flag from '../components/flag';
-import Controls from '../components/controls';
+import Header from '../components/header';
 
 function getOrdinal (n) {
   const s = ['th', 'st', 'nd', 'rd'];
@@ -95,7 +95,6 @@ class App extends Component {
     if (!stack[index].attempts) { return ''; }
     return (
       <div>
-        <p>Your guesses:</p>
         <ul className="list-group">
           {stack[index].attempts.map(attempt =>
             <li className="list-group-item">{attempt}</li>
@@ -106,12 +105,16 @@ class App extends Component {
   };
   renderGuessing = () => (
     <form id="controls" onSubmit={this.onGuess}>
-      <input type="text" ref="guess" autoFocus />
-      <div id="controlGroup">
-        <input type="submit" className="btn btn-primary" value="Guess" />
-        <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
-        <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
-      </div>
+      <p id="controlGroup">
+        <p>
+          <input type="text" ref="guess" className="form-control" autoFocus />
+        </p>
+        <div className="btn-group" role="group">
+          <input type="submit" className="btn btn-primary" value="Guess" />
+          <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
+          <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
+        </div>
+      </p>
       {this.renderAttempts()}
     </form>
   );
@@ -122,8 +125,8 @@ class App extends Component {
     const ordinalAttempts = getOrdinal(attempts.length + 1);
     return (
       <div>
-        <p>Well done! You got {name} right on your {ordinalAttempts} try!</p>
-        <button type="button" onClick={this.onSuccessNext} autoFocus>Next</button>
+        <p>Well done!</p><p>You got {name} right on your {ordinalAttempts} try!</p>
+        <button type="button" className="btn btn-primary" onClick={this.onSuccessNext} autoFocus>Next</button>
       </div>
     );
   };
@@ -133,7 +136,7 @@ class App extends Component {
     return (
       <div>
         <p>This was the flag of {name}.</p>
-        <button type="button" onClick={this.onGiveUpNext} autoFocus>Next</button>
+        <button type="button" className="btn btn-default" onClick={this.onGiveUpNext} autoFocus>Next</button>
       </div>
     );
   }
@@ -149,8 +152,15 @@ class App extends Component {
     const { index, stack } = this.props;
     return (
       <section id="app">
-        <Flag url={stack[index].url} />
-        {this.renderComponents()}
+        <Header />
+        <div className="container">
+          <Flag url={stack[index].url} />
+          <div className="panel panel-default center-block" style={{ maxWidth: '400px' }}>
+            <div className="panel-body">
+              {this.renderComponents()}
+            </div>
+          </div>
+        </div>
       </section>
     );
   }
