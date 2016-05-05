@@ -6,7 +6,6 @@ import * as Actions from '../actions';
 
 import Flag from '../components/flag';
 import Header from '../components/header';
-import TypeAhead from '../components/typeahead';
 
 function getOrdinal (n) {
   const s = ['th', 'st', 'nd', 'rd'];
