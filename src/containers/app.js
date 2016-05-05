@@ -6,6 +6,7 @@ import * as Actions from '../actions';
 
 import Flag from '../components/flag';
 import Header from '../components/header';
+import TypeAhead from '../components/typeahead';
 
 function getOrdinal (n) {
   const s = ['th', 'st', 'nd', 'rd'];
@@ -103,21 +104,27 @@ class App extends Component {
       </div>
     );
   };
-  renderGuessing = () => (
-    <form id="controls" onSubmit={this.onGuess}>
-      <p id="controlGroup">
-        <p>
-          <input type="text" ref="guess" className="form-control" autoFocus />
+  renderGuessing = () => {
+    const nations = this.props.stack.map(flag => flag.name);
+    return (
+      <form id="controls" onSubmit={this.onGuess}>
+        <p id="controlGroup">
+          <p>
+            <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
+            <datalist id="nations">
+              {nations.map(nation => <option value={nation} />)}
+            </datalist>
+          </p>
+          <div className="btn-group" role="group">
+            <input type="submit" className="btn btn-primary" value="Guess" />
+            <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
+            <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
+          </div>
         </p>
-        <div className="btn-group" role="group">
-          <input type="submit" className="btn btn-primary" value="Guess" />
-          <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
-          <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
-        </div>
-      </p>
-      {this.renderAttempts()}
-    </form>
-  );
+        {this.renderAttempts()}
+      </form>
+    );
+  };
   renderSuccess = () => {
     const { stack, index } = this.props;
     const name = stack[index].name;
