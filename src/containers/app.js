@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import * as Actions from '../actions';
 // import _ from 'lodash';
 
+import Header from '../components/header';
 import Flag from '../components/flag';
-import Controls from '../components/controls';
 
 function getOrdinal (n) {
   const s = ['th', 'st', 'nd', 'rd'];
@@ -72,12 +72,12 @@ class App extends Component {
     e.preventDefault();
     const { index, actions } = this.props;
     this.next(() => actions.successful(index));
-    // this.setState({ stage: App.stages.GUESSING }, () => actions.successful(index));
   }
   onSkip = e => {
     e.preventDefault();
     const { index, actions } = this.props;
     actions.skip(index);
+    this.refs.guess.focus();
   };
   onGiveUp = e => {
     e.preventDefault();
@@ -88,14 +88,18 @@ class App extends Component {
     this.next(() => actions.giveUp(index));
   }
   next = action => {
-    this.setState({ stage: App.stages.GUESSING }, action);
+    const { index, stack } = this.props;
+    if (index >= stack.length) {
+      this.setState({ stage: App.stages.SUMMARY });
+    } else {
+      this.setState({ stage: App.stages.GUESSING }, action);
+    }
   }
   renderAttempts = () => {
     const { index, stack } = this.props;
     if (!stack[index].attempts) { return ''; }
     return (
       <div>
-        <p>Your guesses:</p>
         <ul className="list-group">
           {stack[index].attempts.map(attempt =>
             <li className="list-group-item">{attempt}</li>
@@ -104,17 +108,27 @@ class App extends Component {
       </div>
     );
   };
-  renderGuessing = () => (
-    <form id="controls" onSubmit={this.onGuess}>
-      <input type="text" ref="guess" autoFocus />
-      <div id="controlGroup">
-        <input type="submit" value="Guess" />
-        <button type="button" onClick={this.onSkip}>Skip</button>
-        <button type="button" onClick={this.onGiveUp}>Give Up</button>
-      </div>
-      {this.renderAttempts()}
-    </form>
-  );
+  renderGuessing = () => {
+    const nations = this.props.stack.map(flag => flag.name);
+    return (
+      <form id="controls" onSubmit={this.onGuess}>
+        <p id="controlGroup">
+          <p>
+            <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
+            <datalist id="nations">
+              {nations.map(nation => <option value={nation} />)}
+            </datalist>
+          </p>
+          <div className="btn-group" role="group">
+            <input type="submit" className="btn btn-primary" value="Guess" />
+            <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
+            <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
+          </div>
+        </p>
+        {this.renderAttempts()}
+      </form>
+    );
+  };
   renderSuccess = () => {
     const { stack, index } = this.props;
     const name = stack[index].name;
@@ -122,8 +136,8 @@ class App extends Component {
     const ordinalAttempts = getOrdinal(attempts.length + 1);
     return (
       <div>
-        <p>Well done! You got {name} right on your {ordinalAttempts} try!</p>
-        <button type="button" onClick={this.onSuccessNext} autoFocus>Next</button>
+        <p>Well done!</p><p>You got {name} right on your {ordinalAttempts} try!</p>
+        <button type="button" className="btn btn-primary" onClick={this.onSuccessNext} autoFocus>Next</button>
       </div>
     );
   };
@@ -133,7 +147,7 @@ class App extends Component {
     return (
       <div>
         <p>This was the flag of {name}.</p>
-        <button type="button" onClick={this.onGiveUpNext} autoFocus>Next</button>
+        <button type="button" className="btn btn-default" onClick={this.onGiveUpNext} autoFocus>Next</button>
       </div>
     );
   }
@@ -145,19 +159,74 @@ class App extends Component {
     };
     return component[this.state.stage];
   };
-  render () {
-    const { index, stack } = this.props;
+  renderProgress = () => {
+    const stackSize = this.props.stack.length;
+    const progress = this.props.index / stackSize;
     return (
-      <section id="quizzer">
-        <Flag url={stack[index].url} />
-        {this.renderComponents()}
+      <div className="progress">
+        <div className="progress-bar" role="progressbar" style={{ width: `${progress * 100}%` }}>
+          {this.props.index}/{stackSize}
+        </div>
+      </div>
+    );
+  };
+  renderSummary = () => {
+    const correct = this.props.stack.filter(flag => flag.success);
+    const giveUp = this.props.stack.filter(flag => !flag.success);
+    const avgCorrect = correct.reduce((prev, cur) => prev + cur.attempts ? cur.attempts.length : 0, 0) / correct.length;
+    const avgGiveup = giveUp.reduce((prev, cur) => prev + cur.attempts ? cur.attempts.length : 0, 0) / giveUp.length;
+
+    return (
+      <div>
+        <h1>Done!</h1>
+        <p>Number correct: {correct.length}</p>
+        <p>Number of give ups: {giveUp.length}</p>
+        {/* <p>Number of skips: {this.state.numSkips}</p> */}
+        <p>Average guesses per correct guess: {avgCorrect}</p>
+        <p>Average guesses per give up: {avgGiveup}</p>
+      </div>
+    );
+  };
+  renderStage = () => {
+    if (this.state.stage === App.stages.SUMMARY) {
+      return (
+        <div>
+          {this.renderProgress()}
+          {this.renderSummary()}
+        </div>
+      );
+    } else {
+      const { stack, index } = this.props;
+      return (
+        <div>
+          {this.renderProgress()}
+          <Flag url={stack[index].url} />
+          <div className="panel panel-default center-block" style={{ maxWidth: '400px' }}>
+            <div className="panel-body">
+              {this.renderComponents()}
+            </div>
+          </div>
+        </div>
+      );
+    }
+  };
+  render () {
+    return (
+      <section id="app">
+        <Header />
+        <div className="container">
+          {this.renderStage()}
+        </div>
       </section>
     );
   }
 }
 
 function mapStateToProps (state) {
-  return state;
+  return {
+    ...state,
+    ...state.app
+  };
 }
 
 function mapDispatchToProps (dispatch) {

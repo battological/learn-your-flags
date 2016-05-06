@@ -35,3 +35,17 @@ export function wrongGuess (index, guess) {
     guess
   };
 }
+
+export function changeContinent (continent) {
+  return {
+    type: types.CHANGE_CONTINENT,
+    continent
+  };
+}
+
+export function locationChange (location) {
+  return {
+    type: types.LOCATION_CHANGE,
+    location
+  };
+}
