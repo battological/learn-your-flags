@@ -1,7 +1,7 @@
-export const NORTH_AMERICA = 'NORTH_AMERICA';
-export const SOUTH_AMERICA = 'SOUTH_AMERICA';
-export const EUROPE = 'EUROPE';
-export const AFRICA = 'AFRICA';
-export const ASIA = 'ASIA';
-export const OCEANIA = 'OCEANIA';
-export const ALL = 'ALL';
+export const NORTH_AMERICA = 'na';
+export const SOUTH_AMERICA = 'sa';
+export const EUROPE = 'eur';
+export const AFRICA = 'afr';
+export const ASIA = 'asia';
+export const OCEANIA = 'ocea';
+export const ALL = 'all';

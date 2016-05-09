@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from '../actions';
-// import _ from 'lodash';
 
 import Header from '../components/header';
 import Flag from '../components/flag';
@@ -32,28 +31,25 @@ function validate (rawInput, rawExpected) {
   return (input === expected || acceptable.includes(input));
 }
 
-function average (arr) {
-  return arr.reduce((prev, cur) => prev + cur) / arr.length;
-}
-
 class App extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,
+    continent: PropTypes.string,
     stack: PropTypes.arrayOf(PropTypes.shape({
       url: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
       accepts: React.PropTypes.arrayOf(React.PropTypes.string)
     }))
   };
+
   static stages = {
     GUESSING: 'GUESSING',
     SUCCESS: 'SUCCESS',
-    GIVE_UP: 'GIVE_UP'
+    GIVE_UP: 'GIVE_UP',
+    SUMMARY: 'SUMMARY'
   };
-  state = {
-    stage: App.stages.GUESSING
-  };
+
   onGuess = e => {
     e.preventDefault();
     const guess = this.refs.guess.value;
@@ -68,25 +64,30 @@ class App extends Component {
       actions.wrongGuess(index, guess);
     }
   };
+
   onSuccessNext = e => {
     e.preventDefault();
     const { index, actions } = this.props;
     this.next(() => actions.successful(index));
-  }
+  };
+
   onSkip = e => {
     e.preventDefault();
     const { index, actions } = this.props;
     actions.skip(index);
     this.refs.guess.focus();
   };
+
   onGiveUp = e => {
     e.preventDefault();
     this.setState({ stage: App.stages.GIVE_UP });
   };
+
   onGiveUpNext = () => {
     const { index, actions } = this.props;
     this.next(() => actions.giveUp(index));
-  }
+  };
+
   next = action => {
     const { index, stack } = this.props;
     if (index >= stack.length) {
@@ -94,7 +95,8 @@ class App extends Component {
     } else {
       this.setState({ stage: App.stages.GUESSING }, action);
     }
-  }
+  };
+
   renderAttempts = () => {
     const { index, stack } = this.props;
     if (!stack[index].attempts) { return ''; }
@@ -108,27 +110,29 @@ class App extends Component {
       </div>
     );
   };
+
   renderGuessing = () => {
     const nations = this.props.stack.map(flag => flag.name);
     return (
       <form id="controls" onSubmit={this.onGuess}>
-        <p id="controlGroup">
-          <p>
-            <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
-            <datalist id="nations">
-              {nations.map(nation => <option value={nation} />)}
-            </datalist>
-          </p>
-          <div className="btn-group" role="group">
-            <input type="submit" className="btn btn-primary" value="Guess" />
-            <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
-            <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
-          </div>
+        <p>
+          <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
+          <datalist id="nations">
+            {nations.map(nation => <option value={nation} />)}
+          </datalist>
         </p>
-        {this.renderAttempts()}
+        <div className="btn-group" role="group">
+          <input type="submit" className="btn btn-primary" value="Guess" />
+          <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
+          <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
+        </div>
+        <p>
+          {this.renderAttempts()}
+        </p>
       </form>
     );
   };
+
   renderSuccess = () => {
     const { stack, index } = this.props;
     const name = stack[index].name;
@@ -136,21 +140,38 @@ class App extends Component {
     const ordinalAttempts = getOrdinal(attempts.length + 1);
     return (
       <div>
-        <p>Well done!</p><p>You got {name} right on your {ordinalAttempts} try!</p>
-        <button type="button" className="btn btn-primary" onClick={this.onSuccessNext} autoFocus>Next</button>
+        <p>Well done!</p>
+        <p>You got {name} right on your {ordinalAttempts} try!</p>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={this.onSuccessNext}
+          autoFocus
+        >
+          Next
+        </button>
       </div>
     );
   };
+
   renderGiveUp = () => {
     const { stack, index } = this.props;
     const name = stack[index].name;
     return (
       <div>
         <p>This was the flag of {name}.</p>
-        <button type="button" className="btn btn-default" onClick={this.onGiveUpNext} autoFocus>Next</button>
+        <button
+          type="button"
+          className="btn btn-default"
+          onClick={this.onGiveUpNext}
+          autoFocus
+        >
+          Next
+        </button>
       </div>
     );
-  }
+  };
+
   renderComponents = () => {
     const component = {
       [App.stages.GUESSING]: this.renderGuessing(),
@@ -159,6 +180,7 @@ class App extends Component {
     };
     return component[this.state.stage];
   };
+
   renderProgress = () => {
     const stackSize = this.props.stack.length;
     const progress = this.props.index / stackSize;
@@ -170,11 +192,14 @@ class App extends Component {
       </div>
     );
   };
+
   renderSummary = () => {
     const correct = this.props.stack.filter(flag => flag.success);
     const giveUp = this.props.stack.filter(flag => !flag.success);
-    const avgCorrect = correct.reduce((prev, cur) => prev + cur.attempts ? cur.attempts.length : 0, 0) / correct.length;
-    const avgGiveup = giveUp.reduce((prev, cur) => prev + cur.attempts ? cur.attempts.length : 0, 0) / giveUp.length;
+    const avgCorrect = correct.reduce((prev, cur) =>
+      prev + (cur.attempts ? cur.attempts.length : 0, 0)) / correct.length;
+    const avgGiveup = giveUp.reduce((prev, cur) =>
+      prev + (cur.attempts ? cur.attempts.length : 0, 0)) / giveUp.length;
 
     return (
       <div>
@@ -187,6 +212,7 @@ class App extends Component {
       </div>
     );
   };
+
   renderStage = () => {
     if (this.state.stage === App.stages.SUMMARY) {
       return (
@@ -210,6 +236,15 @@ class App extends Component {
       );
     }
   };
+
+  constructor(props) {
+    super(props);
+    props.actions.createStack(props.continent);
+    this.state = {
+      stage: App.stages.GUESSING
+    };
+  }
+
   render () {
     return (
       <section id="app">
@@ -222,17 +257,15 @@ class App extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (state, props) {
   return {
-    ...state,
-    ...state.app
+    ...state.app,
+    continent: props.params.continent
   };
 }
 
 function mapDispatchToProps (dispatch) {
-  return {
-    actions: bindActionCreators(Actions, dispatch)
-  };
+  return { actions: bindActionCreators(Actions, dispatch) };
 }
 
 export default connect(
