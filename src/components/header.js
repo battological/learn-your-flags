@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import * as continents from '../constants/continents';
 
 const styles = {
   header: {
@@ -25,12 +26,12 @@ const Header = () => {
               Continent <span className="caret"></span>
             </a>
             <ul className="dropdown-menu">
-              <li><a href="/NORTH_AMERICA">North America</a></li>
-              <li><a href="/south_america">South America</a></li>
-              <li><a href="/EUROPE">Europe</a></li>
-              <li><a href="/AFRICA">Africa</a></li>
-              <li><a href="/ASIA">Asia</a></li>
-              <li><a href="/OCEANIA">Oceania</a></li>
+              <li><a href={`/${continents.NORTH_AMERICA}`}>North America</a></li>
+              <li><a href={`/${continents.SOUTH_AMERICA}`}>South America</a></li>
+              <li><a href={`/${continents.EUROPE}`}>Europe</a></li>
+              <li><a href={`/${continents.AFRICA}`}>Africa</a></li>
+              <li><a href={`/${continents.ASIA}`}>Asia</a></li>
+              <li><a href={`/${continents.OCEANIA}`}>Oceania</a></li>
             </ul>
           </li>
         </ul>
