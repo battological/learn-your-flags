@@ -27,13 +27,13 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
   }
 
   if (action.type === types.NEXT) {
-    if (state.index >= state.stack.length) {
+    if (state.index >= state.stack.length - 1) {
       return {
         ...state,
+        index: state.index + 1,
         stage: stages.SUMMARY
       };
     }
-
     return {
       ...state,
       index: state.index + 1,
