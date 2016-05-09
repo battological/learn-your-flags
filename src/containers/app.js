@@ -228,7 +228,6 @@ class App extends Component {
   }
 
   render () {
-    console.log('hi');
     return (
       <section id="app">
         <Header />

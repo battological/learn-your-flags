@@ -27,6 +27,13 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
   }
 
   if (action.type === types.NEXT) {
+    if (state.index >= state.stack.length) {
+      return {
+        ...state,
+        stage: stages.SUMMARY
+      };
+    }
+
     return {
       ...state,
       index: state.index + 1,
@@ -49,7 +56,6 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
   if (action.type === types.GIVE_UP) {
     return {
       ...state,
-      index: state.index + 1,
       stack: state.stack.map((f, i) => flagLogic(f, i, action)),
       stage: stages.GIVE_UP
     };
