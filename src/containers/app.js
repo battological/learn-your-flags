@@ -181,10 +181,12 @@ class App extends Component {
   renderSummary = () => {
     const correct = this.props.stack.filter(flag => flag.success);
     const giveUp = this.props.stack.filter(flag => !flag.success);
-    const avgCorrect = correct.reduce((prev, cur) =>
-      prev + (cur.attempts ? cur.attempts.length : 0, 0)) / correct.length;
-    const avgGiveup = giveUp.reduce((prev, cur) =>
-      prev + (cur.attempts ? cur.attempts.length : 0, 0)) / giveUp.length;
+    const avgCorrect = correct.reduce((prev, cur) => (
+      prev + (cur.attempts ? cur.attempts.length : 0)
+    ), 0) / correct.length;
+    const avgGiveup = correct.reduce((prev, cur) => (
+      prev + (cur.attempts ? cur.attempts.length : 0)
+    ), 0) / giveUp.length;
 
     return (
       <div>
