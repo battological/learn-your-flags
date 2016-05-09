@@ -1,9 +1,10 @@
 import * as types from '../constants/actionTypes';
 
-export function createStack (continent) {
+export function createStack (continent, seed) {
   return {
     type: types.CREATE_STACK,
-    continent
+    continent,
+    seed
   };
 }
 

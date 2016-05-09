@@ -90,8 +90,8 @@ class App extends Component {
     return (
       <div>
         <ul className="list-group">
-          {stack[index].attempts.map(attempt =>
-            <li className="list-group-item">{attempt}</li>
+          {stack[index].attempts.map((attempt, i) =>
+            <li className="list-group-item" key={i}>{attempt}</li>
           )}
         </ul>
       </div>
@@ -105,7 +105,7 @@ class App extends Component {
         <p>
           <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
           <datalist id="nations">
-            {nations.map(nation => <option value={nation} />)}
+            {nations.map((nation, i) => <option value={nation} key={i} />)}
           </datalist>
         </p>
         <div className="btn-group" role="group">
@@ -226,7 +226,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    props.actions.createStack(props.continent);
+    props.actions.createStack(props.continent, props.seed);
   }
 
   render () {
@@ -244,7 +244,8 @@ class App extends Component {
 function mapStateToProps (state, props) {
   return {
     ...state.app,
-    continent: props.params.continent
+    continent: props.params.continent,
+    seed: props.location.query.s ? props.location.query.s : 0
   };
 }
 

@@ -6,6 +6,8 @@ import * as stages from '../constants/stages';
 import flags from '../constants/flags';
 import flagLogic from './flag';
 
+import SeededShuffle from 'seededshuffle';
+
 const defaultState = {
   seed: 0,
   index: 0,
@@ -15,14 +17,15 @@ const defaultState = {
 };
 const appLogic = (state = defaultState, action) => { // state is the full app state
   if (action.type === types.CREATE_STACK) {
-    const newStack = flags.filter(flag => (
+    const filteredStack = flags.filter(flag => (
       action.continent === undefined
       || action.continent === continents.ALL
       || flag.continent === action.continent
     ));
+    const shuffledStack = SeededShuffle.shuffle(filteredStack, action.seed, true);
     return {
       ...state,
-      stack: newStack
+      stack: shuffledStack
     };
   }
 
