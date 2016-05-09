@@ -38,6 +38,7 @@ class App extends Component {
     index: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,
     continent: PropTypes.string,
+    seed: PropTypes.number,
     stack: PropTypes.arrayOf(PropTypes.shape({
       url: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
@@ -234,7 +235,7 @@ class App extends Component {
       <section id="app">
         <Header />
         <div className="container">
-          {this.renderStage()}
+          {!this.state.loading && this.renderStage()}
         </div>
       </section>
     );
@@ -242,10 +243,12 @@ class App extends Component {
 }
 
 function mapStateToProps (state, props) {
+  let randomSeed = Math.random() * 1000000;
+  randomSeed = randomSeed.toString(32);
   return {
     ...state.app,
     continent: props.params.continent,
-    seed: props.location.query.s ? props.location.query.s : 0
+    seed: props.location.query.s ? props.location.query.s : randomSeed
   };
 }
 
