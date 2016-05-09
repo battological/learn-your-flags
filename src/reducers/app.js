@@ -2,6 +2,7 @@
 
 import * as types from '../constants/actionTypes';
 import * as continents from '../constants/continents';
+import * as stages from '../constants/stages';
 import flags from '../constants/flags';
 import flagLogic from './flag';
 
@@ -9,7 +10,8 @@ const defaultState = {
   seed: 0,
   index: 0,
   continent: continents.ALL,
-  stack: flags
+  stack: flags,
+  stage: stages.GUESSING
 };
 const appLogic = (state = defaultState, action) => { // state is the full app state
   if (action.type === types.CREATE_STACK) {
@@ -28,9 +30,10 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
     return {
       ...state,
       index: state.index + 1,
-      stack: state.stack.map((f, i) => flagLogic(f, i, action))
+      stage: stages.GUESSING
     };
   }
+
   if (action.type === types.SKIP) {
     const i = action.index;
     return {
@@ -42,19 +45,31 @@ const appLogic = (state = defaultState, action) => { // state is the full app st
       ]
     };
   }
+
   if (action.type === types.GIVE_UP) {
     return {
       ...state,
       index: state.index + 1,
-      stack: state.stack.map((f, i) => flagLogic(f, i, action))
+      stack: state.stack.map((f, i) => flagLogic(f, i, action)),
+      stage: stages.GIVE_UP
     };
   }
+
   if (action.type === types.WRONG_GUESS) {
     return {
       ...state,
-      stack: state.stack.map((f, i) => flagLogic(f, i, action))
+      stack: state.stack.map((f, i) => flagLogic(f, i, action)),
     };
   }
+
+  if (action.type === types.RIGHT_GUESS) {
+    return {
+      ...state,
+      stack: state.stack.map((f, i) => flagLogic(f, i, action)),
+      stage: stages.SUCCESS
+    };
+  }
+
   if (action.type === types.CHANGE_CONTINENT) {
     return {
       ...state,

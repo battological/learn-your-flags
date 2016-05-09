@@ -3,6 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from '../actions';
 
+import * as stages from '../constants/stages';
+
 import Header from '../components/header';
 import Flag from '../components/flag';
 
@@ -40,18 +42,13 @@ class App extends Component {
       url: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
       accepts: React.PropTypes.arrayOf(React.PropTypes.string)
-    }))
-  };
-
-  static stages = {
-    GUESSING: 'GUESSING',
-    SUCCESS: 'SUCCESS',
-    GIVE_UP: 'GIVE_UP',
-    SUMMARY: 'SUMMARY'
+    })),
+    stage: PropTypes.string.isRequired
   };
 
   onGuess = e => {
     e.preventDefault();
+
     const guess = this.refs.guess.value;
     if (guess === '') return;
     this.refs.guess.value = '';
@@ -59,20 +56,15 @@ class App extends Component {
     const { stack, index, actions } = this.props;
     if (validate(guess, stack[index])) {
       this.refs.guess.value = '';
-      this.setState({ stage: App.stages.SUCCESS });
+      actions.rightGuess(index);
     } else {
       actions.wrongGuess(index, guess);
     }
   };
 
-  onSuccessNext = e => {
-    e.preventDefault();
-    const { index, actions } = this.props;
-    this.next(() => actions.successful(index));
-  };
-
   onSkip = e => {
     e.preventDefault();
+
     const { index, actions } = this.props;
     actions.skip(index);
     this.refs.guess.focus();
@@ -80,21 +72,16 @@ class App extends Component {
 
   onGiveUp = e => {
     e.preventDefault();
-    this.setState({ stage: App.stages.GIVE_UP });
-  };
 
-  onGiveUpNext = () => {
     const { index, actions } = this.props;
-    this.next(() => actions.giveUp(index));
+    actions.giveUp(index);
   };
 
-  next = action => {
-    const { index, stack } = this.props;
-    if (index >= stack.length) {
-      this.setState({ stage: App.stages.SUMMARY });
-    } else {
-      this.setState({ stage: App.stages.GUESSING }, action);
-    }
+  next = e => {
+    e.preventDefault();
+
+    const { index, actions } = this.props;
+    actions.next(index);
   };
 
   renderAttempts = () => {
@@ -126,9 +113,7 @@ class App extends Component {
           <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
           <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
         </div>
-        <p>
-          {this.renderAttempts()}
-        </p>
+        {this.renderAttempts()}
       </form>
     );
   };
@@ -145,7 +130,7 @@ class App extends Component {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={this.onSuccessNext}
+          onClick={this.next}
           autoFocus
         >
           Next
@@ -163,7 +148,7 @@ class App extends Component {
         <button
           type="button"
           className="btn btn-default"
-          onClick={this.onGiveUpNext}
+          onClick={this.next}
           autoFocus
         >
           Next
@@ -174,11 +159,11 @@ class App extends Component {
 
   renderComponents = () => {
     const component = {
-      [App.stages.GUESSING]: this.renderGuessing(),
-      [App.stages.SUCCESS]: this.renderSuccess(),
-      [App.stages.GIVE_UP]: this.renderGiveUp()
+      [stages.GUESSING]: this.renderGuessing(),
+      [stages.SUCCESS]: this.renderSuccess(),
+      [stages.GIVE_UP]: this.renderGiveUp()
     };
-    return component[this.state.stage];
+    return component[this.props.stage];
   };
 
   renderProgress = () => {
@@ -214,7 +199,7 @@ class App extends Component {
   };
 
   renderStage = () => {
-    if (this.state.stage === App.stages.SUMMARY) {
+    if (this.props.stage === stages.SUMMARY) {
       return (
         <div>
           {this.renderProgress()}
@@ -240,12 +225,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     props.actions.createStack(props.continent);
-    this.state = {
-      stage: App.stages.GUESSING
-    };
   }
 
   render () {
+    console.log('hi');
     return (
       <section id="app">
         <Header />

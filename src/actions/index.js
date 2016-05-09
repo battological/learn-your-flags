@@ -7,7 +7,7 @@ export function createStack (continent) {
   };
 }
 
-export function successful (index) {
+export function next (index) {
   return {
     type: types.NEXT,
     index
@@ -33,6 +33,13 @@ export function wrongGuess (index, guess) {
     type: types.WRONG_GUESS,
     index,
     guess
+  };
+}
+
+export function rightGuess (index) {
+  return {
+    type: types.RIGHT_GUESS,
+    index
   };
 }
 
