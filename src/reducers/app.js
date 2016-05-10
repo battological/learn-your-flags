@@ -1,93 +1,86 @@
-// import _ from 'lodash';
+import SeededShuffle from 'seededshuffle';
+
+import flagReducer from './flag';
 
 import * as types from '../constants/actionTypes';
 import * as continents from '../constants/continents';
 import * as stages from '../constants/stages';
 import flags from '../constants/flags';
-import flagLogic from './flag';
-
-import SeededShuffle from 'seededshuffle';
 
 const defaultState = {
-  seed: 0,
+  seed: 1,
   index: 0,
   continent: continents.ALL,
   stack: flags,
   stage: stages.GUESSING
 };
-const appLogic = (state = defaultState, action) => { // state is the full app state
-  if (action.type === types.CREATE_STACK) {
-    const filteredStack = flags.filter(flag => (
-      action.continent === undefined
-      || action.continent === continents.ALL
-      || flag.continent === action.continent
-    ));
-    const shuffledStack = SeededShuffle.shuffle(filteredStack, action.seed, true);
-    return {
-      ...state,
-      stack: shuffledStack
-    };
-  }
 
-  if (action.type === types.NEXT) {
-    if (state.index >= state.stack.length - 1) {
+const appReducer = (state = defaultState, action) => {
+  const reductions = {
+    [types.CREATE_STACK] () {
+      const { continent, seed } = action;
+
+      const filteredStack = flags.filter(flag => continent === undefined || continent === continents.ALL || continent === flag.continent);
+      const shuffledStack = SeededShuffle.shuffle(filteredStack, seed, true);
+
       return {
         ...state,
-        index: state.index + 1,
-        stage: stages.SUMMARY
+        stack: shuffledStack
+      };
+    },
+
+    [types.NEXT] () {
+      const { index, stack } = state;
+      const nextStage = (index >= stack.length - 1) ? stages.SUMMARY : stages.GUESSING;
+
+      return {
+        ...state,
+        index: index + 1,
+        stage: nextStage
+      };
+    },
+
+    [types.SKIP] () {
+      const { index } = action;
+      const { stack } = state;
+
+      return {
+        ...state,
+        stack: [
+          ...stack.slice(0, index),
+          ...stack.slice(index + 1),
+          stack[index]
+        ]
+      };
+    },
+
+    [types.GIVE_UP] () {
+      const { stack } = state;
+      return {
+        ...state,
+        stack: stack.map((flag, index) => flagReducer(flag, index, action)),
+        stage: stages.GIVE_UP
+      };
+    },
+
+    [types.WRONG_GUESS] () {
+      const { stack } = state;
+      return {
+        ...state,
+        stack: stack.map((flag, index) => flagReducer(flag, index, action)),
+      };
+    },
+
+    [types.RIGHT_GUESS] () {
+      const { stack } = state;
+      return {
+        ...state,
+        stack: stack.map((flag, index) => flagReducer(flag, index, action)),
+        stage: stages.SUCCESS
       };
     }
-    return {
-      ...state,
-      index: state.index + 1,
-      stage: stages.GUESSING
-    };
-  }
-
-  if (action.type === types.SKIP) {
-    const i = action.index;
-    return {
-      ...state,
-      stack: [
-        ...state.stack.slice(0, i),
-        ...state.stack.slice(i + 1),
-        state.stack[i]
-      ]
-    };
-  }
-
-  if (action.type === types.GIVE_UP) {
-    return {
-      ...state,
-      stack: state.stack.map((f, i) => flagLogic(f, i, action)),
-      stage: stages.GIVE_UP
-    };
-  }
-
-  if (action.type === types.WRONG_GUESS) {
-    return {
-      ...state,
-      stack: state.stack.map((f, i) => flagLogic(f, i, action)),
-    };
-  }
-
-  if (action.type === types.RIGHT_GUESS) {
-    return {
-      ...state,
-      stack: state.stack.map((f, i) => flagLogic(f, i, action)),
-      stage: stages.SUCCESS
-    };
-  }
-
-  if (action.type === types.CHANGE_CONTINENT) {
-    return {
-      ...state,
-      continent: action.continent,
-      stack: state.stack.filter(flag => flag.continent === action.continent)
-    };
-  }
-
-  return state;
+  };
+  return reductions[action.type] !== undefined ? reductions[action.type]() : state;
 };
 
-export default appLogic;
+export default appReducer;
