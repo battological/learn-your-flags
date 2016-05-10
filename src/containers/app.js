@@ -235,7 +235,7 @@ class App extends Component {
       <section id="app">
         <Header />
         <div className="container">
-          {!this.state.loading && this.renderStage()}
+          {this.renderStage()}
         </div>
       </section>
     );
