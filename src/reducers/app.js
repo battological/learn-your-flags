@@ -45,7 +45,8 @@ const appReducer = (state = defaultState, action) => {
       return {
         ...state,
         index: index + 1,
-        stage: nextStage
+        stage: nextStage,
+        misspell: false
       };
     },
 
@@ -75,9 +76,15 @@ const appReducer = (state = defaultState, action) => {
     [TYPES.WRONG_GUESS] () {
       const { stack } = state;
       const { editDistance } = action;
+      if (editDistance <= 2) {
+        return {
+          ...state,
+          misspell: true
+        };
+      }
       return {
         ...state,
-        misspell: editDistance <= 3,
+        misspell: false,
         stack: stack.map((flag, index) => flagReducer(flag, index, action)),
       };
     },

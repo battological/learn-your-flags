@@ -1,13 +1,14 @@
 import {
   NORTH_AMERICA, SOUTH_AMERICA,
-  EUROPE, AFRICA, ASIA, OCEANIA
+  EUROPE, AFRICA, ASIA, OCEANIA,
+  MIDDLE_EAST, CARIBBEAN
 } from './regions';
 
 const flags = [
   {
     name: 'Afghanistan',
     url: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Afghanistan.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Albania',
@@ -32,7 +33,7 @@ const flags = [
   {
     name: 'Antigua and Barbuda',
     url: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Flag_of_Antigua_and_Barbuda.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Argentina',
@@ -62,12 +63,12 @@ const flags = [
   {
     name: 'Bahamas',
     url: 'https://upload.wikimedia.org/wikipedia/commons/9/93/Flag_of_the_Bahamas.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Bahrain',
     url: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Bahrain.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Bangladesh',
@@ -77,7 +78,7 @@ const flags = [
   {
     name: 'Barbados',
     url: 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Flag_of_Barbados.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Belarus',
@@ -167,7 +168,7 @@ const flags = [
     regions: [AFRICA]
   },
   {
-    name: 'Central [AFRICA]n Republic',
+    name: 'Central African Republic',
     url: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg',
     accepts: ['CAR'],
     regions: [AFRICA]
@@ -222,7 +223,7 @@ const flags = [
   {
     name: 'Cuba',
     url: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Flag_of_Cuba.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Cyprus',
@@ -247,12 +248,12 @@ const flags = [
   {
     name: 'Dominica',
     url: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Flag_of_Dominica.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Dominican Republic',
     url: 'https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_the_Dominican_Republic.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'East Timor',
@@ -343,7 +344,7 @@ const flags = [
   {
     name: 'Grenada',
     url: 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Grenada.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Guatemala',
@@ -368,7 +369,7 @@ const flags = [
   {
     name: 'Haiti',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/56/Flag_of_Haiti.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Honduras',
@@ -398,12 +399,12 @@ const flags = [
   {
     name: 'Iran',
     url: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Flag_of_Iran.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Iraq',
     url: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Flag_of_Iraq.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Ireland',
@@ -429,7 +430,7 @@ const flags = [
   {
     name: 'Jamaica',
     url: 'https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Japan',
@@ -439,7 +440,7 @@ const flags = [
   {
     name: 'Jordan',
     url: 'https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Kazakhstan',
@@ -471,7 +472,7 @@ const flags = [
   {
     name: 'Kuwait',
     url: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Flag_of_Kuwait.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Kyrgyzstan',
@@ -491,7 +492,7 @@ const flags = [
   {
     name: 'Lebanon',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/59/Flag_of_Lebanon.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Lesotho',
@@ -667,7 +668,7 @@ const flags = [
   {
     name: 'Oman',
     url: 'https://upload.wikimedia.org/wikipedia/commons/d/dd/Flag_of_Oman.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Pakistan',
@@ -677,12 +678,12 @@ const flags = [
   {
     name: 'Palau',
     url: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Flag_of_Palau.svg',
-    regions: [ASIA]
+    regions: [OCEANIA]
   },
   {
     name: 'Palestine',
     url: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Panama',
@@ -722,7 +723,7 @@ const flags = [
   {
     name: 'Qatar',
     url: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Flag_of_Qatar.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Romania',
@@ -743,19 +744,19 @@ const flags = [
     name: 'Saint Kitts and Nevis',
     url: 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_Saint_Kitts_and_Nevis.svg',
     accepts: ['St Kitts and Nevis'],
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Saint Lucia',
     url: 'https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Saint_Lucia.svg',
     accepts: ['St Lucia'],
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Saint Vincent and the Grenadines',
     url: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Flag_of_Saint_Vincent_and_the_Grenadines.svg',
     accepts: ['St Vincent and the Grenadines'],
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Samoa',
@@ -775,7 +776,7 @@ const flags = [
   {
     name: 'Saudi Arabia',
     url: 'https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Senegal',
@@ -824,7 +825,7 @@ const flags = [
     regions: [AFRICA]
   },
   {
-    name: 'South [AFRICA]',
+    name: 'South Africa',
     url: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Flag_of_South_Africa.svg',
     regions: [AFRICA]
   },
@@ -871,7 +872,7 @@ const flags = [
   {
     name: 'Syria',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Flag_of_Syria.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Tajikistan',
@@ -901,7 +902,7 @@ const flags = [
   {
     name: 'Trinidad and Tobago',
     url: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Flag_of_Trinidad_and_Tobago.svg',
-    regions: [NORTH_AMERICA]
+    regions: [NORTH_AMERICA, CARIBBEAN]
   },
   {
     name: 'Tunisia',
@@ -911,7 +912,7 @@ const flags = [
   {
     name: 'Turkey',
     url: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Flag_of_Turkey.svg',
-    regions: [EUROPE, ASIA]
+    regions: [EUROPE, ASIA, MIDDLE_EAST]
   },
   {
     name: 'Turkmenistan',
@@ -937,7 +938,7 @@ const flags = [
     name: 'United Arab Emirates',
     url: 'https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg',
     accepts: ['UAE'],
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'United Kingdom',
@@ -985,7 +986,7 @@ const flags = [
   {
     name: 'Yemen',
     url: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Flag_of_Yemen.svg',
-    regions: [ASIA]
+    regions: [ASIA, MIDDLE_EAST]
   },
   {
     name: 'Zambia',
