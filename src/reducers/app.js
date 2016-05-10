@@ -1,27 +1,36 @@
-import SeededShuffle from 'seededshuffle';
+import shuffle from 'knuth-shuffle-seeded';
 
 import flagReducer from './flag';
 
-import * as types from '../constants/actionTypes';
-import * as regions from '../constants/regions';
-import * as stages from '../constants/stages';
+import * as TYPES from '../constants/actionTypes';
+import * as REGIONS from '../constants/regions';
+import * as STAGES from '../constants/stages';
 import flags from '../constants/flags';
+
+/* const compressed = all
+  .map((e, i) => worldUnique(i))
+  .filter((e, i) => (toSave.length < all.length / 2) ? toSave.includes(i) : !toSave.includes(i) ); */
 
 const defaultState = {
   seed: 1,
   index: 0,
-  region: regions.ALL,
+  region: REGIONS.ALL,
   stack: flags,
-  stage: stages.GUESSING
+  stage: STAGES.GUESSING,
+  misspell: false
 };
 
 const appReducer = (state = defaultState, action) => {
   const reductions = {
-    [types.CREATE_STACK] () {
-      const { region, seed } = action;
-
-      const filteredStack = flags.filter(flag => region === undefined || region === regions.ALL || region === flag.region);
-      const shuffledStack = SeededShuffle.shuffle(filteredStack, seed, true);
+    [TYPES.CREATE_STACK] () {
+      const regions = action.regions.split(',');
+      const { seed } = action;
+      const filteredStack = flags.filter(flag => {
+        const acceptable = [undefined, REGIONS.ALL, ...regions, ...flag.regions];
+        const set = new Set(acceptable);
+        return set.size !== acceptable.length;
+      });
+      const shuffledStack = shuffle(filteredStack, seed);
 
       return {
         ...state,
@@ -29,9 +38,9 @@ const appReducer = (state = defaultState, action) => {
       };
     },
 
-    [types.NEXT] () {
+    [TYPES.NEXT] () {
       const { index, stack } = state;
-      const nextStage = (index >= stack.length - 1) ? stages.SUMMARY : stages.GUESSING;
+      const nextStage = (index >= stack.length - 1) ? STAGES.SUMMARY : STAGES.GUESSING;
 
       return {
         ...state,
@@ -40,7 +49,7 @@ const appReducer = (state = defaultState, action) => {
       };
     },
 
-    [types.SKIP] () {
+    [TYPES.SKIP] () {
       const { index } = action;
       const { stack } = state;
 
@@ -54,29 +63,32 @@ const appReducer = (state = defaultState, action) => {
       };
     },
 
-    [types.GIVE_UP] () {
+    [TYPES.GIVE_UP] () {
       const { stack } = state;
       return {
         ...state,
         stack: stack.map((flag, index) => flagReducer(flag, index, action)),
-        stage: stages.GIVE_UP
+        stage: STAGES.GIVE_UP
       };
     },
 
-    [types.WRONG_GUESS] () {
+    [TYPES.WRONG_GUESS] () {
       const { stack } = state;
+      const { editDistance } = action;
       return {
         ...state,
+        misspell: editDistance <= 3,
         stack: stack.map((flag, index) => flagReducer(flag, index, action)),
       };
     },
 
-    [types.RIGHT_GUESS] () {
+    [TYPES.RIGHT_GUESS] () {
       const { stack } = state;
       return {
         ...state,
+        misspell: false,
         stack: stack.map((flag, index) => flagReducer(flag, index, action)),
-        stage: stages.SUCCESS
+        stage: STAGES.SUCCESS
       };
     }
   };

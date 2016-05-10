@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import editDistance from '../utils/levenshtein';
+
 import * as Actions from '../actions';
 
 import * as stages from '../constants/stages';
@@ -38,7 +40,8 @@ class App extends Component {
     index: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,
     region: PropTypes.string,
-    seed: PropTypes.number,
+    seed: PropTypes.string,
+    misspell: PropTypes.bool,
     stack: PropTypes.arrayOf(PropTypes.shape({
       url: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
@@ -59,7 +62,8 @@ class App extends Component {
       this.refs.guess.value = '';
       actions.rightGuess(index);
     } else {
-      actions.wrongGuess(index, guess);
+      const lev = editDistance(dumbify(guess), dumbify(stack[index].name));
+      actions.wrongGuess(index, guess, lev);
     }
   };
 
@@ -105,6 +109,7 @@ class App extends Component {
       <form id="controls" onSubmit={this.onGuess}>
         <p>
           <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
+          {this.props.misspell && <span className="help-block">Close! Check your spelling!</span>}
           <datalist id="nations">
             {nations.map((nation, i) => <option value={nation} key={i} />)}
           </datalist>
@@ -227,7 +232,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    props.actions.createStack(props.region, props.seed);
+    props.actions.createStack(props.regions, props.seed);
   }
 
   render () {
@@ -243,12 +248,10 @@ class App extends Component {
 }
 
 function mapStateToProps (state, props) {
-  let randomSeed = Math.random() * 1000000;
-  randomSeed = randomSeed.toString(32);
   return {
     ...state.app,
-    region: props.params.region,
-    seed: props.location.query.s ? props.location.query.s : randomSeed
+    regions: props.location.query.r,
+    seed: props.location.query.s
   };
 }
 

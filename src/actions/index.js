@@ -1,9 +1,10 @@
 import * as types from '../constants/actionTypes';
+import { ALL } from '../constants/regions';
 
-export function createStack (region, seed) {
+export function createStack (regions = ALL, seed = 12345) {
   return {
     type: types.CREATE_STACK,
-    region,
+    regions,
     seed
   };
 }
@@ -29,11 +30,12 @@ export function giveUp (index) {
   };
 }
 
-export function wrongGuess (index, guess) {
+export function wrongGuess (index, guess, editDistance) {
   return {
     type: types.WRONG_GUESS,
     index,
-    guess
+    guess,
+    editDistance
   };
 }
 

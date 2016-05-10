@@ -26,12 +26,12 @@ const Header = () => {
               region <span className="caret"></span>
             </a>
             <ul className="dropdown-menu">
-              <li><a href={`/${regions.NORTH_AMERICA}`}>North America</a></li>
-              <li><a href={`/${regions.SOUTH_AMERICA}`}>South America</a></li>
-              <li><a href={`/${regions.EUROPE}`}>Europe</a></li>
-              <li><a href={`/${regions.AFRICA}`}>Africa</a></li>
-              <li><a href={`/${regions.ASIA}`}>Asia</a></li>
-              <li><a href={`/${regions.OCEANIA}`}>Oceania</a></li>
+              <li><a href={`/?r=${regions.NORTH_AMERICA}`}>North America</a></li>
+              <li><a href={`/?r=${regions.SOUTH_AMERICA}`}>South America</a></li>
+              <li><a href={`/?r=${regions.EUROPE}`}>Europe</a></li>
+              <li><a href={`/?r=${regions.AFRICA}`}>Africa</a></li>
+              <li><a href={`/?r=${regions.ASIA}`}>Asia</a></li>
+              <li><a href={`/?r=${regions.OCEANIA}`}>Oceania</a></li>
             </ul>
           </li>
         </ul>
