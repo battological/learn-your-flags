@@ -1,4 +1,4 @@
-import base62 from 'Base62';
+import base62 from 'base62';
 
 const compressor = (stack) => {
   /**
@@ -6,10 +6,14 @@ const compressor = (stack) => {
    * @return {string} the string representing the saved flags
    */
   const compress = (toSave) => {
-    return stack
-      .map((e, i) => convert(i))
-      .filter((e, i) => toSave.length < stack.length / 2 ? toSave.includes(i) : !toSave.includes(i))
-      .join('');
+    const adding = toSave.length < stack.length / 2;
+    return (+adding+'')
+      .concat(
+        stack
+          .map((e, i) => convert(i))
+          .filter((e, i) => adding ? toSave.includes(i) : !toSave.includes(i))
+          .join('')
+      );
   };
   
   /**
@@ -17,12 +21,14 @@ const compressor = (stack) => {
    * @return {Object[]} the substack represented by chars
    */
   const decompress = (chars) => {
+    const adding = parseInt(chars[0], 10);
     const indexes = chars
+      .substring(1)
       .match(/.{2}/g)
       .map(e => convert(e));
     return stack
       .filter((e, i) => (
-        indexes.length < stack.length / 2 ? indexes.includes(i) : !indexes.includes(i)
+        adding ? indexes.includes(i) : !indexes.includes(i)
       ));
   }
   
@@ -31,9 +37,11 @@ const compressor = (stack) => {
       const converted = base62.encode(n);
       return converted.length === 1 ? '0'+converted : converted;
     } else if (typeof n === 'string') {
-      return = base62.decode(n);
+      return base62.decode(n);
     }
   }
 
   return { compress, decompress };
 };
+
+export default compressor;
