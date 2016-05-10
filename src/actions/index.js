@@ -1,6 +1,20 @@
 import * as types from '../constants/actionTypes';
 import { ALL } from '../constants/regions';
 
+export function saveURL (currentURL) {
+  return {
+    type: types.SAVE_STACK,
+    currentURL
+  };
+}
+
+export function restoreSavedStack (restore) {
+  return {
+    type: types.RESTORE_SAVED_STACK,
+    restore
+  };
+}
+
 export function createStack (regions = ALL, seed = 12345) {
   return {
     type: types.CREATE_STACK,

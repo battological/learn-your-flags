@@ -18,18 +18,14 @@ const compressor = (stack) => {
   
   /**
    * @param {string} chars - string result of compress function
-   * @return {Object[]} the substack represented by chars
+   * @return {number[]} the indexes of the original stack to use
    */
   const decompress = (chars) => {
     const adding = parseInt(chars[0], 10);
-    const indexes = chars
+    return chars
       .substring(1)
       .match(/.{2}/g)
       .map(e => convert(e));
-    return stack
-      .filter((e, i) => (
-        adding ? indexes.includes(i) : !indexes.includes(i)
-      ));
   }
   
   const convert = n => {

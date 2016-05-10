@@ -6,6 +6,7 @@ import * as TYPES from '../constants/actionTypes';
 import * as REGIONS from '../constants/regions';
 import * as STAGES from '../constants/stages';
 import flags from '../constants/flags';
+import compressor from '../compression/compression';
 
 /* const compressed = all
   .map((e, i) => worldUnique(i))
@@ -22,6 +23,28 @@ const defaultState = {
 
 const appReducer = (state = defaultState, action) => {
   const reductions = {
+    [TYPES.SAVE_STACK] () {
+      const giveUpNames = state.stack.filter(f => !f.success).map(f => f['name']);
+      const giveUpIndexes = [];
+      flags.forEach((f, i) => { if (giveUpNames.includes(f['name'])) giveUpIndexes.push(i); });
+      const c = compressor(flags);
+      const savedURL = action.currentURL.concat('/?x=', c.compress(giveUpIndexes))
+      return {
+        ...state,
+	savedURL
+      };
+    },
+
+    [TYPES.RESTORE_SAVED_STACK] () {
+      const c = compressor(flags);
+      const restore = c.decompress(action.restore);
+      const filteredStack = flags.filter((f, i) => restore.includes(i));
+      return {
+        ...state,
+        stack: filteredStack
+      };
+    },
+
     [TYPES.CREATE_STACK] () {
       const regions = action.regions.split(',');
       const { seed } = action;

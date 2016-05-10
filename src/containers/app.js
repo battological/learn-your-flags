@@ -9,6 +9,7 @@ import * as stages from '../constants/stages';
 
 import Header from '../components/header';
 import Flag from '../components/flag';
+import compressor from '../compression/compression';
 
 function getOrdinal (n) {
   const s = ['th', 'st', 'nd', 'rd'];
@@ -87,6 +88,10 @@ class App extends Component {
 
     const { index, actions } = this.props;
     actions.next(index);
+  };
+
+  generateSaveURL = e => {
+    this.props.actions.saveURL(window.location.origin);
   };
 
   renderAttempts = () => {
@@ -187,12 +192,14 @@ class App extends Component {
   renderSummary = () => {
     const correct = this.props.stack.filter(flag => flag.success);
     const giveUp = this.props.stack.filter(flag => !flag.success);
-    const avgCorrect = correct.reduce((prev, cur) => (
+    let avgCorrect = correct.reduce((prev, cur) => (
       prev + (cur.attempts ? cur.attempts.length : 0)
     ), 0) / correct.length;
-    const avgGiveup = correct.reduce((prev, cur) => (
+    let avgGiveup = correct.reduce((prev, cur) => (
       prev + (cur.attempts ? cur.attempts.length : 0)
     ), 0) / giveUp.length;
+
+    if (giveUp.length) this.generateSaveURL();
 
     return (
       <div>
@@ -200,8 +207,18 @@ class App extends Component {
         <p>Number correct: {correct.length}</p>
         <p>Number of give ups: {giveUp.length}</p>
         {/* <p>Number of skips: {this.state.numSkips}</p> */}
-        <p>Average guesses per correct guess: {avgCorrect}</p>
-        <p>Average guesses per give up: {avgGiveup}</p>
+        {!isNaN(avgCorrect) && <p>Average guesses per correct guess: {avgCorrect}</p>}
+        {!isNaN(avgGiveup) && <p>Average guesses per give up: {avgGiveup}</p>}
+	
+	{this.props.savedURL && (
+	  <div>
+	    <h1>Save for later?</h1>
+	    <p>Play again with only the flags you gave up on!</p>
+	    <div className="well" style={{ margin: '5px' }}>
+	      <a href={this.props.savedURL}>{this.props.savedURL}</a>
+	    </div>
+	  </div>
+	)}
       </div>
     );
   };
@@ -233,6 +250,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     props.actions.createStack(props.regions, props.seed);
+    if (props.saved) props.actions.restoreSavedStack(props.saved);
   }
 
   render () {
@@ -251,7 +269,8 @@ function mapStateToProps (state, props) {
   return {
     ...state.app,
     regions: props.location.query.r,
-    seed: props.location.query.s
+    seed: props.location.query.s,
+    saved: props.location.query.x
   };
 }
 
