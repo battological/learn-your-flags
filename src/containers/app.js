@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from '../actions';
-// import _ from 'lodash';
+
+import * as stages from '../constants/stages';
 
 import Header from '../components/header';
 import Flag from '../components/flag';
@@ -32,30 +33,23 @@ function validate (rawInput, rawExpected) {
   return (input === expected || acceptable.includes(input));
 }
 
-function average (arr) {
-  return arr.reduce((prev, cur) => prev + cur) / arr.length;
-}
-
 class App extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,
+    continent: PropTypes.string,
+    seed: PropTypes.number,
     stack: PropTypes.arrayOf(PropTypes.shape({
       url: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
       accepts: React.PropTypes.arrayOf(React.PropTypes.string)
-    }))
+    })),
+    stage: PropTypes.string.isRequired
   };
-  static stages = {
-    GUESSING: 'GUESSING',
-    SUCCESS: 'SUCCESS',
-    GIVE_UP: 'GIVE_UP'
-  };
-  state = {
-    stage: App.stages.GUESSING
-  };
+
   onGuess = e => {
     e.preventDefault();
+
     const guess = this.refs.guess.value;
     if (guess === '') return;
     this.refs.guess.value = '';
@@ -63,72 +57,68 @@ class App extends Component {
     const { stack, index, actions } = this.props;
     if (validate(guess, stack[index])) {
       this.refs.guess.value = '';
-      this.setState({ stage: App.stages.SUCCESS });
+      actions.rightGuess(index);
     } else {
       actions.wrongGuess(index, guess);
     }
   };
-  onSuccessNext = e => {
-    e.preventDefault();
-    const { index, actions } = this.props;
-    this.next(() => actions.successful(index));
-  }
+
   onSkip = e => {
     e.preventDefault();
+
     const { index, actions } = this.props;
     actions.skip(index);
     this.refs.guess.focus();
   };
+
   onGiveUp = e => {
     e.preventDefault();
-    this.setState({ stage: App.stages.GIVE_UP });
-  };
-  onGiveUpNext = () => {
+
     const { index, actions } = this.props;
-    this.next(() => actions.giveUp(index));
-  }
-  next = action => {
-    const { index, stack } = this.props;
-    if (index >= stack.length) {
-      this.setState({ stage: App.stages.SUMMARY });
-    } else {
-      this.setState({ stage: App.stages.GUESSING }, action);
-    }
-  }
+    actions.giveUp(index);
+  };
+
+  next = e => {
+    e.preventDefault();
+
+    const { index, actions } = this.props;
+    actions.next(index);
+  };
+
   renderAttempts = () => {
     const { index, stack } = this.props;
     if (!stack[index].attempts) { return ''; }
     return (
       <div>
         <ul className="list-group">
-          {stack[index].attempts.map(attempt =>
-            <li className="list-group-item">{attempt}</li>
+          {stack[index].attempts.map((attempt, i) =>
+            <li className="list-group-item" key={i}>{attempt}</li>
           )}
         </ul>
       </div>
     );
   };
+
   renderGuessing = () => {
     const nations = this.props.stack.map(flag => flag.name);
     return (
       <form id="controls" onSubmit={this.onGuess}>
-        <p id="controlGroup">
-          <p>
-            <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
-            <datalist id="nations">
-              {nations.map(nation => <option value={nation} />)}
-            </datalist>
-          </p>
-          <div className="btn-group" role="group">
-            <input type="submit" className="btn btn-primary" value="Guess" />
-            <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
-            <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
-          </div>
+        <p>
+          <input type="text" ref="guess" list="nations" className="form-control" autoFocus />
+          <datalist id="nations">
+            {nations.map((nation, i) => <option value={nation} key={i} />)}
+          </datalist>
         </p>
+        <div className="btn-group" role="group">
+          <input type="submit" className="btn btn-primary" value="Guess" />
+          <button type="button" className="btn btn-default" onClick={this.onSkip}>Skip</button>
+          <button type="button" className="btn btn-danger" onClick={this.onGiveUp}>Give Up</button>
+        </div>
         {this.renderAttempts()}
       </form>
     );
   };
+
   renderSuccess = () => {
     const { stack, index } = this.props;
     const name = stack[index].name;
@@ -136,29 +126,47 @@ class App extends Component {
     const ordinalAttempts = getOrdinal(attempts.length + 1);
     return (
       <div>
-        <p>Well done!</p><p>You got {name} right on your {ordinalAttempts} try!</p>
-        <button type="button" className="btn btn-primary" onClick={this.onSuccessNext} autoFocus>Next</button>
+        <p>Well done!</p>
+        <p>You got {name} right on your {ordinalAttempts} try!</p>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={this.next}
+          autoFocus
+        >
+          Next
+        </button>
       </div>
     );
   };
+
   renderGiveUp = () => {
     const { stack, index } = this.props;
     const name = stack[index].name;
     return (
       <div>
         <p>This was the flag of {name}.</p>
-        <button type="button" className="btn btn-default" onClick={this.onGiveUpNext} autoFocus>Next</button>
+        <button
+          type="button"
+          className="btn btn-default"
+          onClick={this.next}
+          autoFocus
+        >
+          Next
+        </button>
       </div>
     );
-  }
+  };
+
   renderComponents = () => {
     const component = {
-      [App.stages.GUESSING]: this.renderGuessing(),
-      [App.stages.SUCCESS]: this.renderSuccess(),
-      [App.stages.GIVE_UP]: this.renderGiveUp()
+      [stages.GUESSING]: this.renderGuessing(),
+      [stages.SUCCESS]: this.renderSuccess(),
+      [stages.GIVE_UP]: this.renderGiveUp()
     };
-    return component[this.state.stage];
+    return component[this.props.stage];
   };
+
   renderProgress = () => {
     const stackSize = this.props.stack.length;
     const progress = this.props.index / stackSize;
@@ -170,11 +178,16 @@ class App extends Component {
       </div>
     );
   };
+
   renderSummary = () => {
     const correct = this.props.stack.filter(flag => flag.success);
     const giveUp = this.props.stack.filter(flag => !flag.success);
-    const avgCorrect = correct.reduce((prev, cur) => prev + cur.attempts ? cur.attempts.length : 0, 0) / correct.length;
-    const avgGiveup = giveUp.reduce((prev, cur) => prev + cur.attempts ? cur.attempts.length : 0, 0) / giveUp.length;
+    const avgCorrect = correct.reduce((prev, cur) => (
+      prev + (cur.attempts ? cur.attempts.length : 0)
+    ), 0) / correct.length;
+    const avgGiveup = correct.reduce((prev, cur) => (
+      prev + (cur.attempts ? cur.attempts.length : 0)
+    ), 0) / giveUp.length;
 
     return (
       <div>
@@ -187,8 +200,9 @@ class App extends Component {
       </div>
     );
   };
+
   renderStage = () => {
-    if (this.state.stage === App.stages.SUMMARY) {
+    if (this.props.stage === stages.SUMMARY) {
       return (
         <div>
           {this.renderProgress()}
@@ -210,29 +224,36 @@ class App extends Component {
       );
     }
   };
+
+  constructor(props) {
+    super(props);
+    props.actions.createStack(props.continent, props.seed);
+  }
+
   render () {
     return (
       <section id="app">
         <Header />
         <div className="container">
-          {this.renderStage()}
+          {!this.state.loading && this.renderStage()}
         </div>
       </section>
     );
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (state, props) {
+  let randomSeed = Math.random() * 1000000;
+  randomSeed = randomSeed.toString(32);
   return {
-    ...state,
-    ...state.app
+    ...state.app,
+    continent: props.params.continent,
+    seed: props.location.query.s ? props.location.query.s : randomSeed
   };
 }
 
 function mapDispatchToProps (dispatch) {
-  return {
-    actions: bindActionCreators(Actions, dispatch)
-  };
+  return { actions: bindActionCreators(Actions, dispatch) };
 }
 
 export default connect(

@@ -1,13 +1,14 @@
 import * as types from '../constants/actionTypes';
 
-export function seed (stackSeed) {
+export function createStack (continent, seed) {
   return {
-    type: types.SEED,
-    seed: stackSeed
+    type: types.CREATE_STACK,
+    continent,
+    seed
   };
 }
 
-export function successful (index) {
+export function next (index) {
   return {
     type: types.NEXT,
     index
@@ -33,6 +34,13 @@ export function wrongGuess (index, guess) {
     type: types.WRONG_GUESS,
     index,
     guess
+  };
+}
+
+export function rightGuess (index) {
+  return {
+    type: types.RIGHT_GUESS,
+    index
   };
 }
 
