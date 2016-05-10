@@ -1,9 +1,9 @@
 import * as types from '../constants/actionTypes';
 
-export function createStack (continent, seed) {
+export function createStack (region, seed) {
   return {
     type: types.CREATE_STACK,
-    continent,
+    region,
     seed
   };
 }
@@ -44,10 +44,10 @@ export function rightGuess (index) {
   };
 }
 
-export function changeContinent (continent) {
+export function changeregion (region) {
   return {
-    type: types.CHANGE_CONTINENT,
-    continent
+    type: types.CHANGE_region,
+    region
   };
 }
 

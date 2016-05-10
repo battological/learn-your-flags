@@ -37,7 +37,7 @@ class App extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,
-    continent: PropTypes.string,
+    region: PropTypes.string,
     seed: PropTypes.number,
     stack: PropTypes.arrayOf(PropTypes.shape({
       url: React.PropTypes.string.isRequired,
@@ -227,7 +227,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    props.actions.createStack(props.continent, props.seed);
+    props.actions.createStack(props.region, props.seed);
   }
 
   render () {
@@ -247,7 +247,7 @@ function mapStateToProps (state, props) {
   randomSeed = randomSeed.toString(32);
   return {
     ...state.app,
-    continent: props.params.continent,
+    region: props.params.region,
     seed: props.location.query.s ? props.location.query.s : randomSeed
   };
 }

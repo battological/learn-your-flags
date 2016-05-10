@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as continents from '../constants/continents';
+import * as regions from '../constants/regions';
 
 const styles = {
   header: {
@@ -23,15 +23,15 @@ const Header = () => {
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">
-              Continent <span className="caret"></span>
+              region <span className="caret"></span>
             </a>
             <ul className="dropdown-menu">
-              <li><a href={`/${continents.NORTH_AMERICA}`}>North America</a></li>
-              <li><a href={`/${continents.SOUTH_AMERICA}`}>South America</a></li>
-              <li><a href={`/${continents.EUROPE}`}>Europe</a></li>
-              <li><a href={`/${continents.AFRICA}`}>Africa</a></li>
-              <li><a href={`/${continents.ASIA}`}>Asia</a></li>
-              <li><a href={`/${continents.OCEANIA}`}>Oceania</a></li>
+              <li><a href={`/${regions.NORTH_AMERICA}`}>North America</a></li>
+              <li><a href={`/${regions.SOUTH_AMERICA}`}>South America</a></li>
+              <li><a href={`/${regions.EUROPE}`}>Europe</a></li>
+              <li><a href={`/${regions.AFRICA}`}>Africa</a></li>
+              <li><a href={`/${regions.ASIA}`}>Asia</a></li>
+              <li><a href={`/${regions.OCEANIA}`}>Oceania</a></li>
             </ul>
           </li>
         </ul>

@@ -3,14 +3,14 @@ import SeededShuffle from 'seededshuffle';
 import flagReducer from './flag';
 
 import * as types from '../constants/actionTypes';
-import * as continents from '../constants/continents';
+import * as regions from '../constants/regions';
 import * as stages from '../constants/stages';
 import flags from '../constants/flags';
 
 const defaultState = {
   seed: 1,
   index: 0,
-  continent: continents.ALL,
+  region: regions.ALL,
   stack: flags,
   stage: stages.GUESSING
 };
@@ -18,9 +18,9 @@ const defaultState = {
 const appReducer = (state = defaultState, action) => {
   const reductions = {
     [types.CREATE_STACK] () {
-      const { continent, seed } = action;
+      const { region, seed } = action;
 
-      const filteredStack = flags.filter(flag => continent === undefined || continent === continents.ALL || continent === flag.continent);
+      const filteredStack = flags.filter(flag => region === undefined || region === regions.ALL || region === flag.region);
       const shuffledStack = SeededShuffle.shuffle(filteredStack, seed, true);
 
       return {

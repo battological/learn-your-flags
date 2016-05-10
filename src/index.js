@@ -14,7 +14,7 @@ render(
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={App}>
-        <Route path="/:continent" component={App} />
+        <Route path="/:region" component={App} />
       </Route>
     </Router>
   </Provider>,

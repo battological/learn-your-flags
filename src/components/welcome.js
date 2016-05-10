@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 
-import * as continents from '../constants/continents';
+import * as regions from '../constants/regions';
 
 const styles = {
-  continent: {
+  region: {
     padding: '5em',
     margin: '1em',
     border: '1px solid black'
@@ -11,22 +11,22 @@ const styles = {
 };
 
 const Welcome = ({ onStart }) => {
-  const selectALL = () => onStart(continents.ALL);
-  const selectNA = () => onStart(continents.NORTH_AMERICA);
-  const selectSA = () => onStart(continents.SOUTH_AMERICA);
-  const selectEUR = () => onStart(continents.EUROPE);
-  const selectASIA = () => onStart(continents.ASIA);
-  const selectAFR = () => onStart(continents.AFRICA);
-  const selectOCEA = () => onStart(continents.OCEANIA);
+  const selectALL = () => onStart(regions.ALL);
+  const selectNA = () => onStart(regions.NORTH_AMERICA);
+  const selectSA = () => onStart(regions.SOUTH_AMERICA);
+  const selectEUR = () => onStart(regions.EUROPE);
+  const selectASIA = () => onStart(regions.ASIA);
+  const selectAFR = () => onStart(regions.AFRICA);
+  const selectOCEA = () => onStart(regions.OCEANIA);
   return (
     <div>
-      <div onClick={selectALL} style={styles.continent}>World-wide</div>
-      <div onClick={selectNA} style={styles.continent}>North America</div>
-      <div onClick={selectSA} style={styles.continent}>South America</div>
-      <div onClick={selectEUR} style={styles.continent}>Europe</div>
-      <div onClick={selectASIA} style={styles.continent}>Asia</div>
-      <div onClick={selectAFR} style={styles.continent}>Africa</div>
-      <div onClick={selectOCEA} style={styles.continent}>Oceania</div>
+      <div onClick={selectALL} style={styles.region}>World-wide</div>
+      <div onClick={selectNA} style={styles.region}>North America</div>
+      <div onClick={selectSA} style={styles.region}>South America</div>
+      <div onClick={selectEUR} style={styles.region}>Europe</div>
+      <div onClick={selectASIA} style={styles.region}>Asia</div>
+      <div onClick={selectAFR} style={styles.region}>Africa</div>
+      <div onClick={selectOCEA} style={styles.region}>Oceania</div>
     </div>
   );
 };
