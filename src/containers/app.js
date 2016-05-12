@@ -9,7 +9,6 @@ import * as stages from '../constants/stages';
 
 import Header from '../components/header';
 import Flag from '../components/flag';
-import compressor from '../compression/compression';
 
 function getOrdinal (n) {
   const s = ['th', 'st', 'nd', 'rd'];
@@ -43,6 +42,8 @@ class App extends Component {
     region: PropTypes.string,
     seed: PropTypes.string,
     misspell: PropTypes.bool,
+    savedURL: PropTypes.string,
+    saved: PropTypes.string,
     stack: PropTypes.arrayOf(PropTypes.shape({
       url: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
@@ -90,7 +91,7 @@ class App extends Component {
     actions.next(index);
   };
 
-  generateSaveURL = e => {
+  generateSaveURL = () => {
     this.props.actions.saveURL(window.location.origin);
   };
 
@@ -209,16 +210,15 @@ class App extends Component {
         {/* <p>Number of skips: {this.state.numSkips}</p> */}
         {!isNaN(avgCorrect) && <p>Average guesses per correct guess: {avgCorrect}</p>}
         {!isNaN(avgGiveup) && <p>Average guesses per give up: {avgGiveup}</p>}
-	
-	{this.props.savedURL && (
-	  <div>
-	    <h1>Save for later?</h1>
-	    <p>Play again with only the flags you gave up on!</p>
-	    <div className="well" style={{ margin: '5px' }}>
-	      <a href={this.props.savedURL}>{this.props.savedURL}</a>
-	    </div>
-	  </div>
-	)}
+        {this.props.savedURL && (
+          <div>
+            <h1>Save for later?</h1>
+            <p>Play again with only the flags you gave up on!</p>
+            <div className="well" style={{ margin: '5px' }}>
+              <a href={this.props.savedURL}>{this.props.savedURL}</a>
+            </div>
+          </div>
+        )}
       </div>
     );
   };

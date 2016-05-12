@@ -24,14 +24,14 @@ const defaultState = {
 const appReducer = (state = defaultState, action) => {
   const reductions = {
     [TYPES.SAVE_STACK] () {
-      const giveUpNames = state.stack.filter(f => !f.success).map(f => f['name']);
+      const giveUpNames = state.stack.filter(f => !f.success).map(f => f.name);
       const giveUpIndexes = [];
-      flags.forEach((f, i) => { if (giveUpNames.includes(f['name'])) giveUpIndexes.push(i); });
+      flags.forEach((f, i) => { if (giveUpNames.includes(f.name)) giveUpIndexes.push(i); });
       const c = compressor(flags);
-      const savedURL = action.currentURL.concat('/?x=', c.compress(giveUpIndexes))
+      const savedURL = action.currentURL.concat('/?x=', c.compress(giveUpIndexes));
       return {
         ...state,
-	savedURL
+        savedURL
       };
     },
 
