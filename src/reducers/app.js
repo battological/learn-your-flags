@@ -39,9 +39,10 @@ const appReducer = (state = defaultState, action) => {
       const c = compressor(flags);
       const restore = c.decompress(action.restore);
       const filteredStack = flags.filter((f, i) => restore.includes(i));
+      const shuffledStack = shuffle(filteredStack);
       return {
         ...state,
-        stack: filteredStack
+        stack: shuffledStack
       };
     },
 
